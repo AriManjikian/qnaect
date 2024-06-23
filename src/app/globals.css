@@ -10,3 +10,7 @@
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
+
+.sm\:modal-middle :where(.modal-box) {
+  max-width: 100% !important;
+}

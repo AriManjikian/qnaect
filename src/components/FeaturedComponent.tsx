@@ -2,8 +2,8 @@ import React from "react";
 
 export default function FeaturedComponent() {
   return (
-    <section className="p-8 md:p-12 flex flex-wrap items-center justify-center gap-4 md:gap-8 bg-gray-900">
-      <span className="text-xs text-[10px] opacity-50">Featured on</span>
+    <section className="p-8 md:p-12 flex flex-wrap items-center justify-center gap-4 md:gap-8 bg-gray-900 text-white">
+      <span className="text-sm text-[10px] opacity-50">Featured on</span>
       <a href="" title="Featured on X.com">
         <XSVG />
       </a>
@@ -23,7 +23,7 @@ export default function FeaturedComponent() {
 function HackerNewsSVG() {
   return (
     <svg
-      className="w-28 md:w-32 fill-base-content saturate-0 opacity-80 hover:opacity-100 hover:saturate-100 duration-100 cursor-pointer"
+      className="w-28 md:w-32 fill-white saturate-0 opacity-80 hover:opacity-100 hover:saturate-100 duration-100 cursor-pointer"
       viewBox="0 0 1126 210"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +63,7 @@ function HackerNewsSVG() {
 function ProductHuntSVG() {
   return (
     <svg
-      className="w-28 md:w-32 fill-base-content saturate-0 opacity-80 hover:opacity-100 hover:saturate-100 duration-100  cursor-pointer"
+      className="w-28 md:w-32 fill-white saturate-0 opacity-80 hover:opacity-100 hover:saturate-100 duration-100  cursor-pointer"
       viewBox="0 0 935 219"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -101,7 +101,7 @@ function ProductHuntSVG() {
 function XSVG() {
   return (
     <svg
-      className="w-8 md:w-9 fill-base-content saturate-0 contrast-50 opacity-80 hover:opacity-100 hover:saturate-100 hover:contrast-100 duration-100 cursor-pointer"
+      className="w-8 md:w-9 fill-white saturate-0 contrast-50 opacity-80 hover:opacity-100 hover:saturate-100 hover:contrast-100 duration-100 cursor-pointer"
       viewBox="0 0 252 252"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +130,7 @@ function XSVG() {
 function RedditSVG() {
   return (
     <svg
-      className="w-[5.5rem] md:w-24 fill-base-content saturate-0 opacity-80 hover:opacity-100 hover:saturate-100 duration-100 cursor-pointer"
+      className="w-[5.5rem] md:w-24 fill-white saturate-0 opacity-80 hover:opacity-100 hover:saturate-100 duration-100 cursor-pointer"
       viewBox="0 0 644 214"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

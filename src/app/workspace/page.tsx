@@ -7,8 +7,10 @@ export default function Workspace() {
   const [username, setUsername] = useState<string | undefined>("");
 
   useEffect(() => {
-    return () => {};
-  }, []);
+    const urlParams = new URLSearchParams(window.location.search);
+    const fetchedUsername = urlParams.get("username");
+    if (fetchedUsername) setUsername(fetchedUsername);
+  }, [username]);
 
   LoginIsRequiredClient();
 
@@ -18,7 +20,7 @@ export default function Workspace() {
       <button onClick={() => signOut()} className="btn btn-primary">
         Sign Out
       </button>
-      <input type="text" value={username} />
+      <h1>{username}</h1>
     </div>
   );
 }
