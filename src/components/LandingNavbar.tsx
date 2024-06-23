@@ -5,7 +5,7 @@ import { RiMenu2Fill } from "react-icons/ri";
 
 const LandingNavbar = () => {
   return (
-    <div className="navbar z-50 fixed backdrop-blur-lg bg-transparent">
+    <div className="navbar z-50 fixed navbar-blur bg-transparent">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">

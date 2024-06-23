@@ -5,3 +5,8 @@
 *,*::before, *::after, body, html {
   scroll-behavior: smooth;
 }
+
+.navbar-blur {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
