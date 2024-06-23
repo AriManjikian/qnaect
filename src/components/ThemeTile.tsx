@@ -9,7 +9,7 @@ export const ThemeTile: React.FC<ThemeTileProps> = ({
 }) => {
   return (
     <div
-      className="overflow-hidden rounded-lg border outline outline-2 outline-offset-2 outline-transparent max-w-34"
+      className="overflow-hidden rounded-lg border outline outline-2 outline-offset-2 outline-transparent"
       data-set-theme={theme}
       onClick={() => {
         setCurrentTheme(theme);

@@ -12,5 +12,5 @@
 }
 
 .sm\:modal-middle :where(.modal-box) {
-  max-width: 100% !important;
+  max-width: fit-content !important;
 }
