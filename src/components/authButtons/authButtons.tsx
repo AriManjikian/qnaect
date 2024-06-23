@@ -4,10 +4,27 @@ import Image from "next/image";
 import googleLogo from "@/public/google.png";
 import githubLogo from "@/public/github.png";
 import { signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export function GoogleSignInButton() {
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fetchedUsername = urlParams.get("username");
+    if (fetchedUsername) setUsername(fetchedUsername);
+  }, []);
   const handleClick = () => {
-    signIn("google");
+    let callbackUrl = "";
+    if (username) {
+      callbackUrl = `/workspace?username=${encodeURIComponent(username)}`;
+    } else {
+      callbackUrl = "/workspace";
+    }
+
+    signIn("google", {
+      callbackUrl: callbackUrl,
+    });
   };
 
   return (
@@ -22,8 +39,23 @@ export function GoogleSignInButton() {
 }
 
 export function GithubSignInButton() {
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fetchedUsername = urlParams.get("username");
+    if (fetchedUsername) setUsername(fetchedUsername);
+  }, []);
   const handleClick = () => {
-    signIn("github");
+    let callbackUrl = "";
+    if (username) {
+      callbackUrl = `/workspace?username=${encodeURIComponent(username)}`;
+    } else {
+      callbackUrl = "/workspace";
+    }
+    signIn("github", {
+      callbackUrl: callbackUrl,
+    });
   };
 
   return (

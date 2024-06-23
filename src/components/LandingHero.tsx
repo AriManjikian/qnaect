@@ -1,9 +1,18 @@
+"use client";
 import Image from "next/image";
-import React from "react";
-import { FaArrowRight, FaStar } from "react-icons/fa6";
+import React, { useState } from "react";
+import { FaArrowRight, FaTrophy } from "react-icons/fa6";
 import FeaturedComponent from "./FeaturedComponent";
-
+import profile from "@/public/profile.jpg";
 const LandingHero = () => {
+  const [username, setUsername] = useState("");
+
+  const handleClaim = () => {
+    if (username.trim() !== "") {
+      // Redirect to /login with username as query parameter
+      window.location.href = `/login?username=${encodeURIComponent(username)}`;
+    }
+  };
   return (
     <>
       <section id="hero">
@@ -30,11 +39,19 @@ const LandingHero = () => {
             </p>
 
             <div className="join">
-              <label className="input input-bordered input-group flex items-center gap-2 join-item rounded-l-lg">
+              <label className="input input-bordered input-group flex items-center gap-2 join-item rounded-l-lg w-56 lg:w-96">
                 qnaect.com/
-                <input type="text" placeholder="username" />
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="username"
+                />
               </label>
-              <button className="btn btn-primary join-item rounded-r-lg">
+              <button
+                onClick={handleClaim}
+                className="btn btn-primary join-item rounded-r-lg"
+              >
                 Claim
                 <FaArrowRight />
               </button>
@@ -47,7 +64,7 @@ const LandingHero = () => {
                     <a href="">
                       <Image
                         alt="Profile"
-                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                        src={profile}
                         width={50}
                         height={50}
                       />
@@ -59,7 +76,7 @@ const LandingHero = () => {
                     <a href="">
                       <Image
                         alt="Profile"
-                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                        src={profile}
                         width={50}
                         height={50}
                       />
@@ -71,7 +88,7 @@ const LandingHero = () => {
                     <a href="">
                       <Image
                         alt="Profile"
-                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                        src={profile}
                         width={50}
                         height={50}
                       />
@@ -83,7 +100,7 @@ const LandingHero = () => {
                     <a href="">
                       <Image
                         alt="Profile"
-                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                        src={profile}
                         width={50}
                         height={50}
                       />
@@ -91,21 +108,18 @@ const LandingHero = () => {
                   </div>
                 </div>
               </div>
-              <p>202 members use qnaect</p>
-              <span>
-                <FaStar className="text-yellow-500 inline text-2xl" />
-                <FaStar className="text-yellow-500 inline text-2xl" />
-                <FaStar className="text-yellow-500 inline text-2xl" />
-                <FaStar className="text-yellow-500 inline text-2xl" />
-                <FaStar className="text-yellow-500 inline text-2xl" />
+              <p>- members use qnaect</p>
+              <span className="flex gap-2 items-center text-primary">
+                <p className="font-bold ">Claim your personal page</p>
+                <FaTrophy />
               </span>
             </section>
           </div>
           <div className="h-1/2 md:h-full block relative max-md:-m-4 lg:w-50">
-            <div className="mockup-phone ">
+            <div className="mockup-phone hidden lg:block">
               <div className="camera"></div>
               <div className="display">
-                <div className="artboard artboard-demo phone-2">Hi.</div>
+                <div className="artboard artboard-demo phone-1"></div>
               </div>
             </div>
           </div>
