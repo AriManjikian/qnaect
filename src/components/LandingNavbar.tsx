@@ -5,7 +5,7 @@ import { RiMenu2Fill } from "react-icons/ri";
 
 const LandingNavbar = () => {
   return (
-    <div className="navbar bg-transparent">
+    <div className="navbar z-50 fixed backdrop-blur-lg bg-transparent">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -15,6 +15,11 @@ const LandingNavbar = () => {
             tabIndex={0}
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
+            <li>
+              <a href="#features" className="font-bold">
+                Features
+              </a>
+            </li>
             <li>
               <a href="#demo" className="font-bold">
                 Demo
@@ -38,6 +43,11 @@ const LandingNavbar = () => {
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
+          <li>
+            <a href="#features" className="font-bold">
+              Features
+            </a>
+          </li>
           <li>
             <a href="#demo" className="font-bold">
               Demo
