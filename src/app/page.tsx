@@ -19,14 +19,18 @@ export default function Home() {
   };
   return (
     <>
-      <div
+      <section
         data-theme={currentTheme}
         className={`${isThemeModalOpen ? "saturate-50 opacity-50" : ""}`}
       >
-        <LandingNavbar />
-        <LandingHero />
-        <div className="flex h-dvh"></div>
-      </div>
+        <div>
+          <LandingNavbar />
+          <LandingHero />
+        </div>
+        <div className="h-dvh">
+          <button className="btn btn-primary">button</button>
+        </div>
+      </section>
       <button
         className="btn btn-primary rounded-lg fixed bottom-4 max-lg:right-4 lg:bottom-16 lg:left-16 select-none"
         onClick={openModal}

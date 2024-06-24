@@ -38,8 +38,8 @@ const LandingHero = () => {
               audience. We make it easy for you to answer meaningful questions.
             </p>
 
-            <div className="join">
-              <label className="input input-bordered input-group flex items-center gap-2 join-item rounded-l-lg w-56 lg:w-96">
+            <div className="join border-4 rounded-r-2xl rounded-l-xl border-transparent focus-within:border-primary">
+              <label className="input input-nofocus input-bordered input-group flex items-center gap-2 join-item rounded-l-lg w-56 lg:w-96">
                 qnaect.com/
                 <input
                   type="text"

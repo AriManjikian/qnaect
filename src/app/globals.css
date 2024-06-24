@@ -11,6 +11,15 @@
   backdrop-filter: blur(10px);
 }
 
+.input-nofocus {
+  outline-width: 0px !important;  
+  outline-offset: 0px !important;
+}
+
+.custom-join:focus-within {
+  border-color: transparent;
+}
+
 @media (min-width: 640px)  {
   .sm\:modal-middle .modal-box {
     max-width: fit-content;
