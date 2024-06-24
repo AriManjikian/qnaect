@@ -25,6 +25,7 @@ export default function Home() {
       >
         <LandingNavbar />
         <LandingHero />
+        <div className="flex h-dvh"></div>
       </div>
       <button
         className="btn btn-primary rounded-lg fixed bottom-4 max-lg:right-4 lg:bottom-16 lg:left-16 select-none"
