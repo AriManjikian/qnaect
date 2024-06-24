@@ -25,13 +25,13 @@ export default function Home() {
       >
         <LandingNavbar />
         <LandingHero />
-        <button
-          className="btn btn-primary rounded-lg absolute bottom-4 max-lg:right-4 lg:bottom-16 lg:left-16 select-none"
-          onClick={openModal}
-        >
-          <FaPalette />
-        </button>
       </div>
+      <button
+        className="btn btn-primary rounded-lg fixed bottom-4 max-lg:right-4 lg:bottom-16 lg:left-16 select-none"
+        onClick={openModal}
+      >
+        <FaPalette />
+      </button>
       {isThemeModalOpen && (
         <div className="modal-overlay">
           <dialog
