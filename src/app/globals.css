@@ -11,6 +11,8 @@
   backdrop-filter: blur(10px);
 }
 
-.sm\:modal-middle :where(.modal-box) {
-  max-width: fit-content !important;
+@media (min-width: 640px)  {
+  .sm\:modal-middle .modal-box {
+    max-width: fit-content;
+  }
 }

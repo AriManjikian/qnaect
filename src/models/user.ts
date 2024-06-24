@@ -1,4 +1,4 @@
-import mongoose, { Schema, mongo } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 const userSchema = new Schema(

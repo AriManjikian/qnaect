@@ -1,4 +1,3 @@
-// themes.ts
 export const themesArray: string[] = [
   "light",
   "dark",

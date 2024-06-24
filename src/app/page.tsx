@@ -4,7 +4,7 @@ import LandingNavbar from "@/components/LandingNavbar";
 import { ThemeTile } from "@/components/ThemeTile";
 import { themesArray } from "@/lib/themes";
 import { useState } from "react";
-import { FaPalette, FaPallet } from "react-icons/fa6";
+import { FaPalette } from "react-icons/fa6";
 export default function Home() {
   const [themes, setThemes] = useState<string[]>(themesArray);
   const [currentTheme, setCurrentTheme] = useState<string>("forest");
@@ -26,7 +26,7 @@ export default function Home() {
         <LandingNavbar />
         <LandingHero />
         <button
-          className="btn btn-primary rounded-lg fixed bottom-4 max-lg:right-4 lg:bottom-16 lg:left-16 select-none"
+          className="btn btn-primary rounded-lg absolute bottom-4 max-lg:right-4 lg:bottom-16 lg:left-16 select-none"
           onClick={openModal}
         >
           <FaPalette />
@@ -36,9 +36,9 @@ export default function Home() {
         <div className="modal-overlay">
           <dialog
             open
-            className="modal modal-bottom sm:modal-middle max-w-full"
+            className="modal modal-bottom sm:modal-middle max-w-full z-20"
           >
-            <div className="modal-box flex gap-4 flex-col">
+            <div className="modal-box flex gap-4 flex-col z-40 ">
               <button className="btn btn-error w-24" onClick={closeModal}>
                 Close
               </button>
@@ -47,6 +47,7 @@ export default function Home() {
                   return (
                     <ThemeTile
                       theme={theme}
+                      currentTheme={currentTheme}
                       setCurrentTheme={setCurrentTheme}
                       key={theme}
                     />

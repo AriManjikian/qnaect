@@ -2,10 +2,8 @@
 import { themesArray } from "@/lib/themes";
 import Link from "next/link";
 import React, { useState } from "react";
-import { FaPalette } from "react-icons/fa6";
 import { IoLogInOutline } from "react-icons/io5";
 import { RiMenu2Fill } from "react-icons/ri";
-import { ThemeTile } from "./ThemeTile";
 
 const LandingNavbar = () => {
   const [themes, setThemes] = useState<string[]>(themesArray);

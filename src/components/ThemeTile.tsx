@@ -1,15 +1,19 @@
 interface ThemeTileProps {
   theme: string;
+  currentTheme: string;
   setCurrentTheme: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const ThemeTile: React.FC<ThemeTileProps> = ({
   theme,
+  currentTheme,
   setCurrentTheme,
 }) => {
   return (
     <div
-      className="overflow-hidden rounded-lg border outline outline-2 outline-offset-2 outline-transparent"
+      className={`overflow-hidden rounded-lg outline outline-2 outline-offset-2 outline-transparent border-b-8 ${
+        currentTheme === theme ? "border-primary" : "border-base"
+      }`}
       data-set-theme={theme}
       onClick={() => {
         setCurrentTheme(theme);
