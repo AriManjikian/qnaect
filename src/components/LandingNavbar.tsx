@@ -73,7 +73,7 @@ const LandingNavbar = () => {
         <div className="flex gap-4 navbar-end">
           <Link href={"/login"} className="btn btn-primary rounded-lg">
             Log In
-            <IoLogInOutline />
+            <IoLogInOutline className="text-xl md:text-2xl" />
           </Link>
         </div>
       </div>

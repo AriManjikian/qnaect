@@ -4,14 +4,14 @@ import LandingNavbar from "@/components/LandingNavbar";
 import { ThemeTile } from "@/components/ThemeTile";
 import { themesArray } from "@/lib/themes";
 import { useState } from "react";
-import { FaPalette } from "react-icons/fa6";
+import { IoColorPaletteOutline } from "react-icons/io5";
 export default function Home() {
   const [themes, setThemes] = useState<string[]>(themesArray);
-  const [currentTheme, setCurrentTheme] = useState<string>("forest");
+  const [currentTheme, setCurrentTheme] = useState<string>("");
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
 
-  const openModal = () => {
-    setIsThemeModalOpen(true);
+  const toggleModal = () => {
+    setIsThemeModalOpen(!isThemeModalOpen);
   };
 
   const closeModal = () => {
@@ -32,10 +32,10 @@ export default function Home() {
         </div>
       </section>
       <button
-        className="btn btn-primary rounded-lg fixed bottom-4 max-lg:right-4 lg:bottom-16 lg:left-16 select-none"
-        onClick={openModal}
+        className="btn btn-primary rounded-lg fixed bottom-4 max-lg:right-4 lg:bottom-16 lg:left-16 select-none z-50"
+        onClick={toggleModal}
       >
-        <FaPalette />
+        <IoColorPaletteOutline size={25} />
       </button>
       {isThemeModalOpen && (
         <div className="modal-overlay">

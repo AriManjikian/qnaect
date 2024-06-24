@@ -15,12 +15,24 @@ export default function Workspace() {
   LoginIsRequiredClient();
 
   return (
-    <div>
-      <h1>Workspace</h1>
-      <button onClick={() => signOut()} className="btn btn-primary">
-        Sign Out
-      </button>
-      <h1>{username}</h1>
-    </div>
+    <>
+      <div>
+        <button onClick={() => signOut()} className="btn btn-primary">
+          Sign Out
+        </button>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            navigator.share({
+              url: "https://qnaect.vercel.app",
+              title: "qnaect",
+            });
+          }}
+        >
+          share
+        </button>
+        <h1>{username}</h1>
+      </div>
+    </>
   );
 }

@@ -1,9 +1,15 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
-import { FaArrowRight, FaTrophy } from "react-icons/fa6";
+import {
+  FaArrowRight,
+  FaHandshake,
+  FaQuestion,
+  FaTrophy,
+} from "react-icons/fa6";
 import FeaturedComponent from "./FeaturedComponent";
 import profile from "@/public/profile.jpg";
+import { FaQuestionCircle } from "react-icons/fa";
 const LandingHero = () => {
   const [username, setUsername] = useState("");
 
@@ -18,26 +24,40 @@ const LandingHero = () => {
       <section id="hero">
         <div className="mx-auto flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-20 px-8 pb-10 pt-20">
           <div className="max-w-xl flex flex-col gap-10 lg:gap-8 items-center justify-center text-center lg:text-left lg:items-start">
-            <h1 className="select-none font-extrabold text-3xl lg:text-5xl tracking-tight md:-mb-4 flex flex-col items-center lg:items-start">
-              <span>
-                Transform{" "}
-                <span className="after-transform relative decoration-dashed decoration-primary underline secondary-text inline hover:decoration-accent">
-                  questions
-                </span>{" "}
+            <div className="indicator">
+              <span className="indicator-item">
+                <label className="swap swap-flip text-4xl rotate-12">
+                  <input type="checkbox" />
+
+                  <div className="swap-on">
+                    <FaQuestionCircle />
+                  </div>
+                  <div className="swap-off">
+                    <FaHandshake />
+                  </div>
+                </label>
               </span>
-              <span>
-                into{" "}
-                <span className="after-transform relative decoration-dashed decoration-primary underline secondary-text inline hover:decoration-accent">
-                  connections
+
+              <h1 className="select-none font-extrabold text-3xl lg:text-5xl tracking-tight md:-mb-4 flex flex-col items-center lg:items-start">
+                <span>
+                  Transform{" "}
+                  <span className="after-transform relative decoration-dashed decoration-primary underline secondary-text inline hover:decoration-accent">
+                    questions
+                  </span>{" "}
                 </span>
-              </span>
-              <span>with ease</span>
-            </h1>
+                <span>
+                  into{" "}
+                  <span className="after-transform relative decoration-dashed decoration-primary underline secondary-text inline hover:decoration-accent">
+                    connections
+                  </span>
+                </span>
+                <span>with ease</span>
+              </h1>
+            </div>
             <p className="text-md opacity-80 max-w-sm select-none">
               Claim your personal Q&A page to effectively engage with your
               audience. We make it easy for you to answer meaningful questions.
             </p>
-
             <div className="join lg:border-2 lg:rounded-r-xl lg:rounded-l-lg lg:border-transparent lg:focus-within:border-primary">
               <label className="input input-nofocus input-bordered input-group flex items-center gap-2 join-item rounded-l-lg w-56 lg:w-96">
                 qnaect.com/
