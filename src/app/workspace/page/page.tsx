@@ -4,7 +4,7 @@ import profile from "@/public/profile.jpg";
 import Image from "next/image";
 const Page = () => {
   return (
-    <section className="flex flex-col lg:flex-row gap-10 justify-center items-center p-4">
+    <section className="flex flex-col lg:flex-row p-4 md:pl-80 gap-10 justify-center items-center min-h-dvh">
       <div className="p-5">
         <span className="flex items-center">
           <div
