@@ -13,7 +13,6 @@ const Page = () => {
   const [currentTheme, setCurrentTheme] = useState<string>("");
   const [bioMarkdown, setBioMarkdown] = useState<string>("");
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("bio"); // Default active tab
 
   const toggleModal = () => {
     setIsThemeModalOpen(!isThemeModalOpen);
@@ -25,7 +24,7 @@ const Page = () => {
 
   return (
     <>
-      <section className="flex flex-col lg:flex-row pt-5 p-4 lg:gap-40 justify-center items-center lg:items-start min-h-dvh">
+      <section className="flex flex-col lg:flex-row pt-5 p-4 lg:gap-10 justify-center items-center lg:items-start min-h-dvh">
         <div className="p-5">
           {/* Profile Picture */}
           <div className="avatar rounded-full">
@@ -51,7 +50,7 @@ const Page = () => {
                 className="textarea textarea-bordered input-nofocus w-full min-h-64"
                 rows={8}
                 value={bioMarkdown}
-                placeholder={`# Heading 1\n## Heading 2\n### Heading 3\n\n**Bold Text**\n*Italic Text*\n\n[Link Text](http://example.com)`}
+                placeholder={`# Heading 1\n## Heading 2\n### Heading 3\n\n**Bold Text**\n*Italic Text*\n\n[Link Text](https://example.com)`}
                 onChange={(e) => setBioMarkdown(e.target.value)}
               />
             </li>
@@ -74,20 +73,21 @@ const Page = () => {
         </div>
 
         {/* Phone Mockup */}
-        <div className="mockup-phone m-0">
-          <div className="camera"></div>
-          <div className="display">
-            <div
-              className="artboard p-10 phone-1 markdown >"
-              data-theme={currentTheme}
-            >
-              <div className="avatar rounded-full">
-                <div className="w-12 sm:w-12 rounded-full">
-                  <Image src={profile} alt="" width={96} height={96} />
-                </div>
+        <div className="relative border-zinc-950 dark:border-zinc-950 bg-zinc-950 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
+          <div className="w-[148px] h-[18px] bg-zinc-950 top-0 rounded-b-[1rem] left-1/2 transform -translate-x-1/2 absolute"></div>
+          <div className="h-[46px] w-[3px] bg-zinc-950 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
+          <div className="h-[46px] w-[3px] bg-zinc-950 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
+          <div className="h-[64px] w-[3px] bg-zinc-950 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
+          <div
+            className="rounded-[2rem] overflow-hidden w-[272px] h-[572px] p-4 pt-6"
+            data-theme={currentTheme}
+          >
+            <div className="avatar rounded-full">
+              <div className="w-12 sm:w-12 rounded-full">
+                <Image src={profile} alt="" width={96} height={96} />
               </div>
-              <ReactMarkdown>{bioMarkdown}</ReactMarkdown>
             </div>
+            <ReactMarkdown>{bioMarkdown}</ReactMarkdown>
           </div>
         </div>
       </section>
@@ -97,9 +97,9 @@ const Page = () => {
         <div className="modal-overlay">
           <dialog
             open
-            className="modal modal-bottom sm:modal-middle max-w-full z-20"
+            className="modal modal-bottom sm:modal-middle max-w-full z-50"
           >
-            <div className="modal-box flex gap-4 flex-col z-40 ">
+            <div className="modal-box flex gap-4 flex-col z-40 bg-base-300">
               <button className="btn btn-error w-24" onClick={closeModal}>
                 Close
               </button>

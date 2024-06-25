@@ -152,13 +152,11 @@ const LandingHero = () => {
               </span>
             </section>
           </div>
-          <div className="md:h-full block relative max-md:-m-4 lg:w-50">
-            <div className="mockup-phone hidden lg:block">
-              <div className="camera"></div>
-              <div className="display">
-                <div className="artboard artboard-demo phone-1"></div>
-              </div>
-            </div>
+          <div className="relative border-zinc-950 dark:border-zinc-950 bg-zinc-950 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
+            <div className="w-[148px] h-[18px] bg-zinc-950 top-0 rounded-b-[1rem] left-1/2 transform -translate-x-1/2 absolute"></div>
+            <div className="h-[46px] w-[3px] bg-zinc-950 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
+            <div className="h-[46px] w-[3px] bg-zinc-950 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
+            <div className="h-[64px] w-[3px] bg-zinc-950 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
           </div>
         </div>
         <FeaturedComponent />
