@@ -41,7 +41,7 @@ const WorkspaceNav = () => {
           <Link
             href={"/workspace/page"}
             className={`btn btn-primary w-full rounded-lg flex ${
-              path === "/workspace/page" ? "btn-outline bg-transparent" : ""
+              path === "/workspace/page" ? "saturate-50 opacity-90" : ""
             }`}
           >
             <MdOutlineContactPage className="text-md md:text-xl" />
@@ -52,7 +52,7 @@ const WorkspaceNav = () => {
           <Link
             href={"/workspace"}
             className={`btn btn-primary w-full rounded-lg flex ${
-              path === "/workspace" ? "btn-outline bg-transparent" : ""
+              path === "/workspace" ? "saturate-50 opacity-90" : ""
             }`}
           >
             <RiQuestionAnswerLine className="text-md md:text-xl" />
@@ -63,7 +63,7 @@ const WorkspaceNav = () => {
           <Link
             href={"/workspace/settings"}
             className={`btn btn-primary w-full rounded-lg flex ${
-              path === "/workspace/settings" ? "btn-outline bg-transparent" : ""
+              path === "/workspace/settings" ? "saturate-50 opacity-90" : ""
             }`}
           >
             <MdSettings className="text-md md:text-xl" />
@@ -90,7 +90,7 @@ const SidebarContent = () => {
             <Link
               href={"/workspace/page"}
               className={`btn btn-primary w-full rounded-lg flex ${
-                path === "/workspace/page" ? "btn-outline no-hover" : ""
+                path === "/workspace/page" ? "saturate-50 opacity-90" : ""
               }`}
             >
               <span>
@@ -103,7 +103,7 @@ const SidebarContent = () => {
             <Link
               href={"/workspace"}
               className={`btn btn-primary w-full rounded-lg flex ${
-                path === "/workspace" ? "btn-outline bg-transparent" : ""
+                path === "/workspace" ? "saturate-50 opacity-90" : ""
               }`}
             >
               <RiQuestionAnswerLine className="text-lg md:text-xl" />
@@ -114,9 +114,7 @@ const SidebarContent = () => {
             <Link
               href={"/workspace/settings"}
               className={`btn btn-primary w-full rounded-lg flex ${
-                path === "/workspace/settings"
-                  ? "btn-outline bg-transparent"
-                  : ""
+                path === "/workspace/settings" ? "saturate-50 opacity-90" : ""
               }`}
             >
               <MdSettings className="text-lg md:text-xl" />
