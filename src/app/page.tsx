@@ -43,7 +43,7 @@ export default function Home() {
             open
             className="modal modal-bottom sm:modal-middle max-w-full z-20"
           >
-            <div className="modal-box flex gap-4 flex-col z-40 ">
+            <div className="modal-box flex gap-4 flex-col z-40 bg-base-300 pt-20 sm:pt-6">
               <button className="btn btn-error w-24" onClick={closeModal}>
                 Close
               </button>

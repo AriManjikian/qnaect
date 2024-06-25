@@ -97,13 +97,13 @@ const Page = () => {
         <div className="modal-overlay">
           <dialog
             open
-            className="modal modal-bottom sm:modal-middle max-w-full z-50 mt-20 sm:mt-0"
+            className="modal modal-bottom sm:modal-middle max-w-full z-50"
           >
-            <div className="modal-box flex gap-4 flex-col z-40 ">
+            <div className="modal-box flex gap-4 flex-col z-40 bg-base-300 pt-20 sm:pt-6">
               <button className="btn btn-error w-24" onClick={closeModal}>
                 Close
               </button>
-              <div className="bg-base-300 rounded-box grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              <div className="rounded-box grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                 {themes.map((theme) => {
                   return (
                     <ThemeTile
