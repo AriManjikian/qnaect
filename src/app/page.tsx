@@ -32,7 +32,7 @@ export default function Home() {
         </div>
       </section>
       <button
-        className="btn btn-primary rounded-lg fixed bottom-4 max-lg:right-4 lg:bottom-16 lg:left-16 select-none z-50"
+        className="btn btn-primary rounded-lg fixed bottom-4 left-4 select-none z-50"
         onClick={toggleModal}
       >
         <IoColorPaletteOutline size={25} />
@@ -47,7 +47,7 @@ export default function Home() {
               <button className="btn btn-error w-24" onClick={closeModal}>
                 Close
               </button>
-              <div className="rounded-box grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              <div className="rounded-box grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                 {themes.map((theme) => {
                   return (
                     <ThemeTile
