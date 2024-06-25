@@ -20,17 +20,7 @@ export default function Workspace() {
         <button onClick={() => signOut()} className="btn btn-primary">
           Sign Out
         </button>
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            navigator.share({
-              url: "https://qnaect.vercel.app",
-              title: "qnaect",
-            });
-          }}
-        >
-          share
-        </button>
+
         <h1>{username}</h1>
       </div>
     </>

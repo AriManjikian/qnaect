@@ -1,14 +1,16 @@
+"use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { MdOutlineContactPage, MdSettings } from "react-icons/md";
 import { RiQuestionAnswerLine } from "react-icons/ri";
 
-export default async function Layout({ children }: { children: any }) {
+export default function Layout({ children }: { children: any }) {
   return (
     <section data-theme="" className="h-dvh">
       <WorkspaceNav />
       <div className="drawer md:drawer-open h-full w-full">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content pt-16 lg:pt-0">
+        <div className="drawer-content pt-16 md:pl-80 lg:pt-0">
           {/* Page content here */}
           {children}
         </div>
@@ -30,13 +32,17 @@ export default async function Layout({ children }: { children: any }) {
 }
 
 const WorkspaceNav = () => {
+  const path = usePathname();
+
   return (
     <div className="navbar fixed md:hidden bg-base-300 z-50">
       <ul className="flex justify-center w-dvw gap-2">
         <li>
           <Link
             href={"/workspace/page"}
-            className="btn btn-primary w-full rounded-lg flex"
+            className={`btn btn-primary w-full rounded-lg flex ${
+              path === "/workspace/page" ? "btn-outline bg-transparent" : ""
+            }`}
           >
             <MdOutlineContactPage className="text-md md:text-xl" />
             <p>Page</p>
@@ -45,7 +51,9 @@ const WorkspaceNav = () => {
         <li>
           <Link
             href={"/workspace"}
-            className="btn btn-primary w-full rounded-lg flex"
+            className={`btn btn-primary w-full rounded-lg flex ${
+              path === "/workspace" ? "btn-outline bg-transparent" : ""
+            }`}
           >
             <RiQuestionAnswerLine className="text-md md:text-xl" />
             <p>Workspace</p>
@@ -54,7 +62,9 @@ const WorkspaceNav = () => {
         <li>
           <Link
             href={"/workspace/settings"}
-            className="btn btn-primary w-full rounded-lg flex"
+            className={`btn btn-primary w-full rounded-lg flex ${
+              path === "/workspace/settings" ? "btn-outline bg-transparent" : ""
+            }`}
           >
             <MdSettings className="text-md md:text-xl" />
             <p>Settings</p>
@@ -66,6 +76,8 @@ const WorkspaceNav = () => {
 };
 
 const SidebarContent = () => {
+  const path = usePathname();
+
   return (
     <>
       <a href="" className="btn btn-ghost w-fit text-xl">
@@ -77,7 +89,9 @@ const SidebarContent = () => {
           <li>
             <Link
               href={"/workspace/page"}
-              className="btn btn-primary w-full rounded-lg flex justify-start"
+              className={`btn btn-primary w-full rounded-lg flex ${
+                path === "/workspace/page" ? "btn-outline no-hover" : ""
+              }`}
             >
               <span>
                 <MdOutlineContactPage className="text-lg md:text-xl" />
@@ -88,7 +102,9 @@ const SidebarContent = () => {
           <li>
             <Link
               href={"/workspace"}
-              className="btn btn-primary w-full rounded-lg flex justify-start"
+              className={`btn btn-primary w-full rounded-lg flex ${
+                path === "/workspace" ? "btn-outline bg-transparent" : ""
+              }`}
             >
               <RiQuestionAnswerLine className="text-lg md:text-xl" />
               Workspace
@@ -97,7 +113,11 @@ const SidebarContent = () => {
           <li>
             <Link
               href={"/workspace/settings"}
-              className="btn btn-primary w-full rounded-lg flex justify-start"
+              className={`btn btn-primary w-full rounded-lg flex ${
+                path === "/workspace/settings"
+                  ? "btn-outline bg-transparent"
+                  : ""
+              }`}
             >
               <MdSettings className="text-lg md:text-xl" />
               Settings

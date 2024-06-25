@@ -17,9 +17,9 @@ export function GoogleSignInButton() {
   const handleClick = () => {
     let callbackUrl = "";
     if (username) {
-      callbackUrl = `/workspace?username=${encodeURIComponent(username)}`;
+      callbackUrl = `/workspace/page?username=${encodeURIComponent(username)}`;
     } else {
-      callbackUrl = "/workspace";
+      callbackUrl = "/workspace/page";
     }
 
     signIn("google", {
@@ -49,9 +49,9 @@ export function GithubSignInButton() {
   const handleClick = () => {
     let callbackUrl = "";
     if (username) {
-      callbackUrl = `/workspace?username=${encodeURIComponent(username)}`;
+      callbackUrl = `/workspace/page?username=${encodeURIComponent(username)}`;
     } else {
-      callbackUrl = "/workspace";
+      callbackUrl = "/workspace/page";
     }
     signIn("github", {
       callbackUrl: callbackUrl,

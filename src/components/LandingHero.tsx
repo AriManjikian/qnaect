@@ -12,6 +12,15 @@ import profile from "@/public/profile.jpg";
 import { FaQuestionCircle } from "react-icons/fa";
 const LandingHero = () => {
   const [username, setUsername] = useState("");
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsFlipped(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsFlipped(false);
+  };
 
   const handleClaim = () => {
     if (username.trim() !== "") {
@@ -27,12 +36,12 @@ const LandingHero = () => {
             <div className="indicator">
               <span className="indicator-item">
                 <label className="swap swap-flip text-4xl rotate-12">
-                  <input type="checkbox" />
+                  <input type="checkbox" checked={isFlipped} readOnly />
 
-                  <div className="swap-on">
+                  <div className="swap-off">
                     <FaQuestionCircle />
                   </div>
-                  <div className="swap-off">
+                  <div className="swap-on">
                     <FaHandshake />
                   </div>
                 </label>
@@ -41,13 +50,21 @@ const LandingHero = () => {
               <h1 className="select-none font-extrabold text-3xl lg:text-5xl tracking-tight md:-mb-4 flex flex-col items-center lg:items-start">
                 <span>
                   Transform{" "}
-                  <span className="after-transform relative decoration-dashed decoration-primary underline secondary-text inline hover:decoration-accent">
+                  <span
+                    className="after-transform relative decoration-dashed decoration-primary underline secondary-text inline hover:decoration-accent"
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
                     questions
                   </span>{" "}
                 </span>
                 <span>
                   into{" "}
-                  <span className="after-transform relative decoration-dashed decoration-primary underline secondary-text inline hover:decoration-accent">
+                  <span
+                    className="after-transform relative decoration-dashed decoration-primary underline secondary-text inline hover:decoration-accent"
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
                     connections
                   </span>
                 </span>
