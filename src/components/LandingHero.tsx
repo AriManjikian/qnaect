@@ -9,6 +9,7 @@ import Image from "next/image";
 import profile from "@/public/profile.jpg";
 import { FaQuestionCircle } from "react-icons/fa";
 import FeaturedComponent from "./FeaturedComponent";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 
 const LandingHero = () => {
   const [username, setUsername] = useState<string>("");
@@ -22,38 +23,6 @@ const LandingHero = () => {
       // Redirect to /login with username as query parameter
       window.location.href = `/login?username=${encodeURIComponent(username)}`;
     }
-  };
-
-  const useIntersectionObserver = (options: IntersectionObserverInit = {}) => {
-    const elementsRef = useRef<(HTMLElement | null)[]>([]);
-
-    useEffect(() => {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          const element = entry.target as HTMLElement; // Cast to HTMLElement
-          const animationClass = element.dataset.animation || "";
-          if (entry.isIntersecting) {
-            element.classList.add(
-              animationClass,
-              "animate-once",
-              "animate-ease-in-out"
-            );
-          }
-        });
-      }, options);
-
-      elementsRef.current.forEach((element) => {
-        if (element) observer.observe(element);
-      });
-
-      return () => {
-        elementsRef.current.forEach((element) => {
-          if (element) observer.unobserve(element);
-        });
-      };
-    }, [options]);
-
-    return elementsRef;
   };
 
   const observerOptions = { threshold: 0.5 };
@@ -191,13 +160,7 @@ const LandingHero = () => {
             </span>
           </section>
         </div>
-        <div
-          ref={(el) => {
-            if (el) elementsRef.current.push(el);
-          }}
-          data-animation="animate-fade-up"
-          className="animate-delay-200 relative border-zinc-950 dark:border-zinc-950 bg-zinc-950 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl"
-        >
+        <div className="relative border-zinc-950 dark:border-zinc-950 bg-zinc-950 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
           <div className="w-[148px] h-[18px] bg-zinc-950 top-0 rounded-b-[1rem] left-1/2 transform -translate-x-1/2 absolute"></div>
           <div className="h-[46px] w-[3px] bg-zinc-950 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
           <div className="h-[46px] w-[3px] bg-zinc-950 absolute -start-[17px] top-[178px] rounded-s-lg"></div>

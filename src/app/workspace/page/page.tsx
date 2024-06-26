@@ -1,6 +1,6 @@
 "use client";
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { LuLink, LuUser } from "react-icons/lu";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { LuUser } from "react-icons/lu";
 import Image from "next/image";
 import { IoColorPaletteOutline } from "react-icons/io5";
 import { themesArray } from "@/lib/themes";
@@ -8,18 +8,20 @@ import { ThemeTile } from "@/components/ThemeTile";
 import ReactMarkdown from "react-markdown";
 import { useSession } from "next-auth/react";
 import { LoginIsRequiredClient } from "@/lib/auth";
+import { FiCamera } from "react-icons/fi";
 const Page = () => {
   LoginIsRequiredClient();
 
   const { data: session } = useSession();
 
   const [themes, setThemes] = useState<string[]>(themesArray);
-
   const [profileImage, setProfileImage] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [selectedTheme, setSelectedTheme] = useState<string>("");
+  const [selectedFile, setSelectedFile] = useState<File>();
   const [bioMarkdown, setBioMarkdown] = useState<string>("");
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
+  const [hoverImageInput, setHoverImageInput] = useState(false);
 
   useEffect(() => {
     const currentUser = session?.user;
@@ -35,17 +37,91 @@ const Page = () => {
     setIsThemeModalOpen(false);
   };
 
+  const uploadToS3 = async (file: File) => {
+    try {
+      // Get the signed URL from your API
+      const response = await fetch("/api/uploads3", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fileName: file.name,
+          fileType: file.type,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get signed URL");
+      }
+
+      const { signedUrl } = await response.json();
+
+      // Upload to S3 using the signed URL
+      const uploadResponse = await fetch(signedUrl, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Failed to upload file");
+      }
+
+      console.log("File uploaded successfully");
+
+      // Use the signed URL to set the profile image
+      // Remove the query string from the URL
+      const imageUrl = signedUrl.split("?")[0];
+      setProfileImage(imageUrl);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      // Handle error (e.g., show error message to user)
+    }
+  };
+
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      const imageUrl = URL.createObjectURL(file);
+      uploadToS3(file);
+    }
+  };
+
   return (
     <>
       <section className="flex flex-col lg:flex-row pt-5 p-4 lg:gap-10 justify-center items-center min-h-dvh">
         <div className="p-5">
           {/* Profile Picture */}
-          <div className="avatar rounded-full">
-            <div className="w-14 sm:w-16 rounded-full">
+          <div
+            className="relative avatar rounded-full"
+            onMouseEnter={() => setHoverImageInput(true)}
+            onMouseLeave={() => setHoverImageInput(false)}
+          >
+            <div className="w-14 sm:w-16 rounded-full overflow-hidden">
               {profileImage && (
-                <Image src={profileImage} alt="" width={96} height={96} />
+                <Image
+                  src={profileImage}
+                  alt="Profile"
+                  width={96}
+                  height={96}
+                />
+              )}
+              {hoverImageInput && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-full">
+                  <FiCamera size={20} className="text-white" />
+                </div>
               )}
             </div>
+            <input
+              type="file"
+              accept="image/png, image/jpeg"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              onChange={handleFileChange}
+            />
           </div>
 
           {/* Page Form */}
@@ -99,14 +175,7 @@ const Page = () => {
               <div className="avatar rounded-full">
                 <div className="w-12 sm:w-12 rounded-full">
                   {profileImage && (
-                    <Image
-                      src={
-                        "https://qnaect-aws-s3-arimanjikian.s3.us-east-2.amazonaws.com/profile.jpg"
-                      }
-                      alt=""
-                      width={96}
-                      height={96}
-                    />
+                    <Image src={profileImage} alt="" width={96} height={96} />
                   )}
                 </div>
               </div>
@@ -149,91 +218,3 @@ const Page = () => {
 };
 
 export default Page;
-
-// components/UploadForm.tsx
-
-const UploadForm = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [uploading, setUploading] = useState<boolean>(false);
-  const [url, setUrl] = useState<string>("");
-
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0] || null;
-    setFile(selectedFile);
-
-    if (selectedFile) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(selectedFile);
-    } else {
-      setPreview(null);
-    }
-  };
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!file) return;
-
-    setUploading(true);
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await res.json();
-    setUrl(data.fileUrl);
-    setUploading(false);
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <div className="form-control">
-        <label className="label">
-          <span className="label-text">Upload a file</span>
-        </label>
-        <input
-          type="file"
-          className="file-input file-input-bordered"
-          onChange={handleFileChange}
-        />
-      </div>
-      {preview && (
-        <div className="mt-4">
-          {file?.type.startsWith("image/") ? (
-            <img
-              src={preview}
-              alt="File preview"
-              className="max-w-xs max-h-xs"
-            />
-          ) : (
-            <p>File selected: {file?.name}</p>
-          )}
-        </div>
-      )}
-      <button
-        type="submit"
-        className={`btn ${uploading ? "loading" : ""}`}
-        disabled={uploading}
-      >
-        {uploading ? "Uploading..." : "Upload"}
-      </button>
-      {url && (
-        <div className="mt-4">
-          <p>
-            File uploaded successfully:{" "}
-            <a href={url} target="_blank" rel="noopener noreferrer">
-              {url}
-            </a>
-          </p>
-        </div>
-      )}
-    </form>
-  );
-};
