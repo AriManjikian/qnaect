@@ -16,13 +16,8 @@ export default function Workspace() {
 
   return (
     <>
-      <div>
-        <button onClick={() => signOut()} className="btn btn-primary">
-          Sign Out
-        </button>
-
-        <h1>{username}</h1>
-      </div>
+      <h1>{username}</h1>
+      <h1>workspace</h1>
     </>
   );
 }

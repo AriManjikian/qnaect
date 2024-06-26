@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { LuMail, LuUser } from "react-icons/lu";
 import { MdOutlineContactPage, MdSettings } from "react-icons/md";
 import { RiQuestionAnswerLine } from "react-icons/ri";
 
@@ -32,17 +32,13 @@ export default function Layout({ children }: { children: any }) {
 }
 
 const WorkspaceNav = () => {
-  const path = usePathname();
-
   return (
     <div className="navbar fixed md:hidden bg-base-300 z-50">
       <ul className="flex justify-center w-dvw gap-2">
         <li>
           <Link
             href={"/workspace/page"}
-            className={`btn btn-primary w-full rounded-lg flex ${
-              path === "/workspace/page" ? "saturate-50 opacity-90" : ""
-            }`}
+            className={`btn btn-primary w-full rounded-lg flex`}
           >
             <MdOutlineContactPage className="text-md md:text-xl" />
             <p>Page</p>
@@ -51,9 +47,7 @@ const WorkspaceNav = () => {
         <li>
           <Link
             href={"/workspace"}
-            className={`btn btn-primary w-full rounded-lg flex ${
-              path === "/workspace" ? "saturate-50 opacity-90" : ""
-            }`}
+            className={`btn btn-primary w-full rounded-lg flex`}
           >
             <RiQuestionAnswerLine className="text-md md:text-xl" />
             <p>Workspace</p>
@@ -62,9 +56,7 @@ const WorkspaceNav = () => {
         <li>
           <Link
             href={"/workspace/settings"}
-            className={`btn btn-primary w-full rounded-lg flex ${
-              path === "/workspace/settings" ? "saturate-50 opacity-90" : ""
-            }`}
+            className={`btn btn-primary w-full rounded-lg flex`}
           >
             <MdSettings className="text-md md:text-xl" />
             <p>Settings</p>
@@ -76,22 +68,18 @@ const WorkspaceNav = () => {
 };
 
 const SidebarContent = () => {
-  const path = usePathname();
-
   return (
     <>
       <a href="" className="btn btn-ghost w-fit text-xl">
         qnaect
       </a>
       <div className="divider divider-primary m-0"></div>
-      <span className="menu rounded-box w-56 mt-10">
-        <ul className="w-full flex flex-col gap-2">
+      <span className="menu rounded-box mt-10">
+        <ul className="w-full flex flex-col gap-2 mx-auto">
           <li>
             <Link
               href={"/workspace/page"}
-              className={`btn btn-primary w-full rounded-lg flex ${
-                path === "/workspace/page" ? "saturate-50 opacity-90" : ""
-              }`}
+              className={`btn btn-primary w-56 mx-auto rounded-lg flex  justify-start`}
             >
               <span>
                 <MdOutlineContactPage className="text-lg md:text-xl" />
@@ -102,9 +90,7 @@ const SidebarContent = () => {
           <li>
             <Link
               href={"/workspace"}
-              className={`btn btn-primary w-full rounded-lg flex ${
-                path === "/workspace" ? "saturate-50 opacity-90" : ""
-              }`}
+              className={`btn btn-primary w-56 mx-auto rounded-lg flex justify-start `}
             >
               <RiQuestionAnswerLine className="text-lg md:text-xl" />
               Workspace
@@ -113,9 +99,7 @@ const SidebarContent = () => {
           <li>
             <Link
               href={"/workspace/settings"}
-              className={`btn btn-primary w-full rounded-lg flex ${
-                path === "/workspace/settings" ? "saturate-50 opacity-90" : ""
-              }`}
+              className={`btn btn-primary w-56 mx-auto rounded-lg flex justify-start `}
             >
               <MdSettings className="text-lg md:text-xl" />
               Settings
@@ -130,19 +114,22 @@ const SidebarContent = () => {
 const SidebarCard = () => {
   return (
     <span className="p-2 mt-auto">
-      <div className="card bg-base-100 saturate-50 image-full w-full shadow-xl">
+      <div className="card image-full">
         <figure>
-          <img
-            src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
-            alt="Shoes"
-          />
+          <div className="bg-gradient-to-r from-primary to-accent h-full w-full"></div>
         </figure>
-        <div className="card-body">
-          <h2 className="card-title">Shoes!</h2>
-          <p>If a dog chews shoes whose shoes does he choose?</p>
-          <div className="card-actions justify-end">
-            <button className="btn btn-primary">Buy Now</button>
-          </div>
+        <div className="card-body p-4">
+          <h2 className="card-title text-white text-lg mb-2">
+            Subscribe to our Newsletter
+          </h2>
+          <span className="label-text text-white">Email Address</span>
+          <label className="input input-nofocus input-bordered flex items-center gap-2">
+            <LuMail />
+            <input placeholder="example@gmail.com" type="text" required />
+          </label>
+          <button type="submit" className="btn btn-primary w-full mt-2">
+            Subscribe
+          </button>
         </div>
       </div>
     </span>

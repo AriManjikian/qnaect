@@ -27,16 +27,14 @@ export default function Home() {
           <LandingNavbar />
           <LandingHero />
         </div>
-        <div className="h-dvh">
-          <button className="btn btn-primary">button</button>
-        </div>
+        <div className="h-dvh"></div>
       </section>
-      <button
+      <div
         className="btn btn-primary rounded-lg fixed bottom-4 left-4 select-none z-50"
         onClick={toggleModal}
       >
         <IoColorPaletteOutline size={25} />
-      </button>
+      </div>
       {isThemeModalOpen && (
         <div className="modal-overlay">
           <dialog

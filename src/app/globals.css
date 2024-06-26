@@ -20,10 +20,6 @@
   border-color: transparent;
 }
 
-a {
-  text-decoration: underline;
-}
-
 .markdown > h1 {
   font-size: 20px;
 }
