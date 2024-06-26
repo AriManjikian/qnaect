@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { getServerSession } from "next-auth/next";
+import { authConfig } from "@/lib/auth"; // Adjust the path to your next-auth options
 
 export async function POST(request: Request) {
   const s3Client = new S3Client({
@@ -12,11 +14,19 @@ export async function POST(request: Request) {
   });
 
   try {
+    const session = await getServerSession(authConfig);
+    if (!session || !session.user || !session.user.email) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
     const { fileName, fileType } = await request.json();
+    const timestamp = new Date().toISOString();
+    const userEmail = session.user.email;
+    const uniqueFileName = `${userEmail}_${timestamp}_${fileName}`;
 
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: fileName,
+      Key: uniqueFileName,
       ContentType: fileType,
     });
 
@@ -24,7 +34,7 @@ export async function POST(request: Request) {
       expiresIn: 3600,
     });
 
-    return NextResponse.json({ signedUrl }, { status: 200 });
+    return NextResponse.json({ signedUrl, uniqueFileName }, { status: 200 });
   } catch (error) {
     console.error("Error generating signed URL:", error);
     return NextResponse.json(

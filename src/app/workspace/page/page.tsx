@@ -1,6 +1,6 @@
 "use client";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { LuUser } from "react-icons/lu";
+import { LuLink, LuUser } from "react-icons/lu";
 import Image from "next/image";
 import { IoColorPaletteOutline } from "react-icons/io5";
 import { themesArray } from "@/lib/themes";
@@ -9,17 +9,20 @@ import ReactMarkdown from "react-markdown";
 import { useSession } from "next-auth/react";
 import { LoginIsRequiredClient } from "@/lib/auth";
 import { FiCamera } from "react-icons/fi";
+import { FaBriefcase } from "react-icons/fa";
 const Page = () => {
   LoginIsRequiredClient();
 
   const { data: session } = useSession();
 
-  const [themes, setThemes] = useState<string[]>(themesArray);
-  const [profileImage, setProfileImage] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [selectedTheme, setSelectedTheme] = useState<string>("");
-  const [selectedFile, setSelectedFile] = useState<File>();
+  const [profileImage, setProfileImage] = useState<string>("");
+  const [occupation, setOccupation] = useState<string>("");
   const [bioMarkdown, setBioMarkdown] = useState<string>("");
+  const [selectedTheme, setSelectedTheme] = useState<string>("");
+
+  const [themes, setThemes] = useState<string[]>(themesArray);
+  const [selectedFile, setSelectedFile] = useState<File>();
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
   const [hoverImageInput, setHoverImageInput] = useState(false);
 
@@ -87,54 +90,68 @@ const Page = () => {
     if (file) {
       setSelectedFile(file);
       const imageUrl = URL.createObjectURL(file);
-      uploadToS3(file);
+      setProfileImage(imageUrl);
     }
   };
 
   return (
     <>
       <section className="flex flex-col lg:flex-row pt-5 p-4 lg:gap-10 justify-center items-center min-h-dvh">
-        <div className="p-5">
-          {/* Profile Picture */}
-          <div
-            className="relative avatar rounded-full"
-            onMouseEnter={() => setHoverImageInput(true)}
-            onMouseLeave={() => setHoverImageInput(false)}
-          >
-            <div className="w-14 sm:w-16 rounded-full overflow-hidden">
-              {profileImage && (
-                <Image
-                  src={profileImage}
-                  alt="Profile"
-                  width={96}
-                  height={96}
-                />
-              )}
-              {hoverImageInput && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-full">
-                  <FiCamera size={20} className="text-white" />
-                </div>
-              )}
-            </div>
-            <input
-              type="file"
-              accept="image/png, image/jpeg"
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              onChange={handleFileChange}
-            />
-          </div>
-
+        <div className="p-5 max-w-4/5">
           {/* Page Form */}
           <ul className="flex flex-col gap-5">
-            <li>
-              <p className="mb-2 text-sm font-medium text-white">Name</p>
-              <label className="input input-nofocus input-bordered flex items-center gap-2">
-                <LuUser />
+            <li className="flex items-start gap-4">
+              {/* Profile Picture */}
+              <div
+                className="relative avatar rounded-full"
+                onMouseEnter={() => setHoverImageInput(true)}
+                onMouseLeave={() => setHoverImageInput(false)}
+              >
+                <div className="w-14 sm:w-16 rounded-full overflow-hidden">
+                  {profileImage && (
+                    <Image
+                      src={profileImage}
+                      alt="Profile"
+                      width={96}
+                      height={96}
+                    />
+                  )}
+                  {hoverImageInput && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-full">
+                      <FiCamera size={20} className="text-white" />
+                    </div>
+                  )}
+                </div>
                 <input
-                  className=""
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  onChange={handleFileChange}
+                />
+              </div>
+              <span>
+                <p className="mb-2 text-sm font-medium text-white">Name</p>
+                <label className="input input-nofocus input-bordered flex items-center gap-2">
+                  <LuUser />
+                  <input
+                    placeholder="Your Name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </label>
+              </span>
+            </li>
+            <li>
+              <p className="mb-2 text-sm font-medium text-white">Occupation</p>
+              <label className="input input-nofocus input-bordered flex items-center gap-2">
+                <FaBriefcase />
+                <input
+                  placeholder="Your Occupation"
                   type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={occupation}
+                  onChange={(e) => setOccupation(e.target.value)}
                   required
                 />
               </label>
@@ -147,7 +164,7 @@ const Page = () => {
                 className="textarea textarea-bordered input-nofocus w-full min-h-64"
                 rows={8}
                 value={bioMarkdown}
-                placeholder={`# Heading 1\n## Heading 2\n### Heading 3\n\n**Bold Text**\n*Italic Text*\n\n[Link Text](https://example.com)`}
+                placeholder={`New Line (2 spaces + Enter)\n# Heading 1\n## Heading 2\n### Heading 3\n**Bold Text**\n*Italic Text*\n[Link Text](https://example.com)`}
                 onChange={(e) => setBioMarkdown(e.target.value)}
               />
             </li>
@@ -171,7 +188,7 @@ const Page = () => {
             className="rounded-[2rem] overflow-hidden w-[272px] h-[572px] p-4 pt-6"
             data-theme={selectedTheme}
           >
-            <span>
+            <span className="flex gap-4">
               <div className="avatar rounded-full">
                 <div className="w-12 sm:w-12 rounded-full">
                   {profileImage && (
@@ -179,9 +196,19 @@ const Page = () => {
                   )}
                 </div>
               </div>
-              <h1 className="font-extrabold">{name}</h1>
+              <span className="flex flex-col">
+                <h1 className="text-md font-extrabold text-clip overflow-hidden w-full max-w-28">
+                  {name}
+                </h1>
+                <h2 className="text-sm">{occupation}</h2>
+              </span>
+              <button className="btn btn-primary btn-sm ml-auto">
+                <LuLink />
+              </button>
             </span>
-            <ReactMarkdown>{bioMarkdown}</ReactMarkdown>
+            <ReactMarkdown className="pt-5 whitespace-normal markdown text-sm overflow-wrap-break-word">
+              {bioMarkdown}
+            </ReactMarkdown>
           </div>
         </div>
       </section>

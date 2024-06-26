@@ -20,14 +20,19 @@
   border-color: transparent;
 }
 
-.markdown > h1 {
-  font-size: 20px;
-}
-.markdown > h2 {
+.markdown h1 {
   font-size: 16px;
+  padding: 0;
 }
-.markdown > h3 {
+.markdown h2 {
+  font-size: 15px;
+}
+.markdown h3 {
   font-size: 14px;
+}
+
+.markdown a {
+  text-decoration: underline;
 }
 
 .no-hover {
