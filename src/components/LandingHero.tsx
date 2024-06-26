@@ -38,12 +38,6 @@ const LandingHero = () => {
               "animate-once",
               "animate-ease-in-out"
             );
-          } else {
-            element.classList.remove(
-              animationClass,
-              "animate-once",
-              "animate-ease-in-out"
-            );
           }
         });
       }, options);
