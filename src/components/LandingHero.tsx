@@ -30,7 +30,7 @@ const LandingHero = () => {
 
   return (
     <section id="hero">
-      <div className="mx-auto flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-20 px-8 pb-10 pt-20">
+      <div className="mx-auto flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-20 px-8 pb-10 pt-24">
         <div className="max-w-xl flex flex-col gap-10 lg:gap-8 items-center justify-center text-center lg:text-left lg:items-start">
           <div className="indicator">
             <span className="indicator-item">

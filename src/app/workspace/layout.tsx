@@ -113,7 +113,7 @@ const SidebarContent = () => {
 
 const SidebarCard = () => {
   return (
-    <span className="p-2 mt-auto">
+    <span className="hidden md:block p-2 mt-auto">
       <div className="card image-full">
         <figure>
           <div className="bg-gradient-to-r from-primary to-accent h-full w-full"></div>

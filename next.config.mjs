@@ -8,6 +8,10 @@ const nextConfig = {
             },
             {
                 protocol: "https",
+                hostname: "avatars.githubusercontent.com",
+            },
+            {
+                protocol: "https",
                 hostname: "qnaect-aws-s3-arimanjikian.s3.us-east-2.amazonaws.com",
             },
             {
