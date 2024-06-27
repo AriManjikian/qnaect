@@ -9,9 +9,33 @@ import ReactMarkdown from "react-markdown";
 import { useSession } from "next-auth/react";
 import { LoginIsRequiredClient } from "@/lib/auth";
 import { FiCamera } from "react-icons/fi";
-import { FaBriefcase } from "react-icons/fa";
+import {
+  FaBriefcase,
+  FaDribbble,
+  FaGithub,
+  FaInstagram,
+  FaLinkedin,
+  FaMedium,
+  FaTelegram,
+  FaTwitch,
+  FaTwitter,
+  FaYoutube,
+} from "react-icons/fa";
+import NewTabLink from "@/components/NewTabLink";
+import { FaXTwitter } from "react-icons/fa6";
+import { Platform } from "aws-sdk/clients/cognitosync";
 const Page = () => {
   LoginIsRequiredClient();
+
+  type PlatformType = {
+    platform: string;
+    icon: JSX.Element;
+  };
+
+  type UserLinkType = {
+    platform: PlatformType;
+    url: string;
+  };
 
   const { data: session } = useSession();
 
@@ -20,11 +44,35 @@ const Page = () => {
   const [occupation, setOccupation] = useState<string>("");
   const [bioMarkdown, setBioMarkdown] = useState<string>("");
   const [selectedTheme, setSelectedTheme] = useState<string>("");
+  const [selectedPlatform, setSelectedPlatform] = useState<PlatformType | null>(
+    null
+  );
+  const [userLinks, setUserLinks] = useState<{
+    [key: string]: UserLinkType;
+  }>({
+    GitHub: {
+      platform: { platform: "GitHub", icon: <FaGithub /> },
+      url: "https://github.com/arimanjikian",
+    },
+  });
+  const [URLInput, setURLInput] = useState<string>("");
 
   const [themes, setThemes] = useState<string[]>(themesArray);
   const [selectedFile, setSelectedFile] = useState<File>();
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
   const [hoverImageInput, setHoverImageInput] = useState(false);
+
+  const socialMediaPlatforms = [
+    { platform: "GitHub", icon: <FaGithub /> },
+    { platform: "Twitter", icon: <FaXTwitter /> },
+    { platform: "YouTube", icon: <FaYoutube /> },
+    { platform: "Instagram", icon: <FaInstagram /> },
+    { platform: "LinkedIn", icon: <FaLinkedin /> },
+    { platform: "Dribbble", icon: <FaDribbble /> },
+    { platform: "Twitch", icon: <FaTwitch /> },
+    { platform: "Telegram", icon: <FaTelegram /> },
+    { platform: "Medium", icon: <FaMedium /> },
+  ];
 
   useEffect(() => {
     const currentUser = session?.user;
@@ -94,13 +142,25 @@ const Page = () => {
     }
   };
 
+  const addPlatformLink = (platform: PlatformType, url: string) => {
+    let urlPattern = /^(https?:\/\/)/;
+    if (!urlPattern.test(url)) {
+      url = "https://" + url;
+    }
+    setUserLinks((prevLinks) => ({
+      ...prevLinks,
+      [platform.platform]: { platform, url },
+    }));
+    setURLInput(""); // Clear the input after adding
+  };
+
   return (
     <>
       <section className="flex flex-col lg:flex-row pt-5 p-4 lg:gap-10 justify-center items-center min-h-dvh">
         <div className="p-5 max-w-4/5">
           {/* Page Form */}
           <ul className="flex flex-col gap-5">
-            <li className="flex items-start gap-4">
+            <li className="flex items-end gap-4">
               {/* Profile Picture */}
               <div
                 className="relative avatar rounded-full"
@@ -129,7 +189,7 @@ const Page = () => {
                   onChange={handleFileChange}
                 />
               </div>
-              <span>
+              <span className="w-full">
                 <p className="mb-2 text-sm font-medium text-white">Name</p>
                 <label className="input input-nofocus input-bordered flex items-center gap-2">
                   <LuUser />
@@ -142,6 +202,14 @@ const Page = () => {
                   />
                 </label>
               </span>
+              <li>
+                <button
+                  className="btn btn-primary rounded-lg"
+                  onClick={toggleModal}
+                >
+                  <IoColorPaletteOutline size={25} />
+                </button>
+              </li>
             </li>
             <li>
               <p className="mb-2 text-sm font-medium text-white">Occupation</p>
@@ -168,13 +236,45 @@ const Page = () => {
                 onChange={(e) => setBioMarkdown(e.target.value)}
               />
             </li>
-            <li>
-              <button
-                className="btn btn-primary rounded-lg"
-                onClick={toggleModal}
-              >
-                <IoColorPaletteOutline size={25} />
-              </button>
+
+            <li className="flex flex-wrap justify-center max-w-4/5">
+              {socialMediaPlatforms.map(({ platform, icon }) => (
+                <button
+                  key={platform}
+                  className="btn btn-ghost text-xl"
+                  onClick={() => {
+                    setSelectedPlatform({ platform, icon });
+                    setURLInput("");
+                  }}
+                >
+                  {icon}
+                </button>
+              ))}
+            </li>
+            <li className="w-full">
+              {selectedPlatform && (
+                <div className="join w-full">
+                  <label className="join-item input input-nofocus input-bordered flex items-center gap-2 w-full">
+                    {selectedPlatform.icon}
+                    <input
+                      className="w-full"
+                      placeholder={`Enter your ${selectedPlatform.platform} url. (https://yourLink.com)`}
+                      type="text"
+                      value={URLInput}
+                      onChange={(e) => setURLInput(e.target.value)}
+                      required
+                    />
+                  </label>
+                  <button
+                    className="btn btn-primary join-item"
+                    onClick={(e) => {
+                      addPlatformLink(selectedPlatform, URLInput);
+                    }}
+                  >
+                    Add
+                  </button>
+                </div>
+              )}
             </li>
           </ul>
         </div>
@@ -185,10 +285,10 @@ const Page = () => {
           <div className="h-[46px] w-[3px] bg-zinc-950 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
           <div className="h-[64px] w-[3px] bg-zinc-950 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
           <div
-            className="rounded-[2rem] overflow-hidden w-[272px] h-[572px] p-4 pt-6"
+            className="rounded-[2rem] no-scrollbar overflow-y-scroll w-[272px] h-[572px] p-4 pt-10"
             data-theme={selectedTheme}
           >
-            <span className="flex gap-4">
+            <span className="flex gap-4 items-center">
               <div className="avatar rounded-full">
                 <div className="w-12 sm:w-12 rounded-full">
                   {profileImage && (
@@ -196,19 +296,57 @@ const Page = () => {
                   )}
                 </div>
               </div>
-              <span className="flex flex-col">
-                <h1 className="text-md font-extrabold text-clip overflow-hidden w-full max-w-28">
+              <span className="flex flex-col max-w-28">
+                <h1 className="text-md font-extrabold text-clip overflow-hidden w-full ">
                   {name}
                 </h1>
-                <h2 className="text-sm">{occupation}</h2>
+                <h2 className="text-sm text-clip overflow-hidden">
+                  {occupation}
+                </h2>
               </span>
-              <button className="btn btn-primary btn-sm ml-auto">
+              <button className="btn btn-primary btn-sm ml-auto rounded-lg">
                 <LuLink />
               </button>
             </span>
-            <ReactMarkdown className="pt-5 whitespace-normal markdown text-sm overflow-wrap-break-word">
+            <ReactMarkdown
+              className="pt-5 whitespace-normal markdown text-sm overflow-wrap-break-word"
+              components={{
+                a: ({ node, ...props }) => (
+                  <NewTabLink href={props.href}>{props.children}</NewTabLink>
+                ),
+              }}
+            >
               {bioMarkdown}
             </ReactMarkdown>
+            <div className="divider m-0"></div>
+            <span data-tip="Scrolls on mobile" className="lg:tooltip w-full">
+              <span className="flex overflow-x-auto no-scrollbar carousel z-30 ">
+                {Object.entries(userLinks).map(([key, link]) => (
+                  <a
+                    key={key}
+                    href={link.url}
+                    className="btn btn-ghost carousel-item text-md md:text-xl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {link.platform.icon}
+                  </a>
+                ))}
+              </span>
+            </span>
+
+            <div className="divider m-0"></div>
+
+            <div className="relative">
+              <textarea
+                className="textarea textarea-bordered rounded-lg input-nofocus w-full mt-4 bg-base-300 placeholder:text-base-content min-h-24"
+                placeholder="Ask me a question!"
+                rows={5}
+              ></textarea>
+              <button className="btn btn-primary rounded-lg btn-sm absolute bottom-4 right-2">
+                Send
+              </button>
+            </div>
           </div>
         </div>
       </section>

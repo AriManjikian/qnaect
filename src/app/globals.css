@@ -39,6 +39,15 @@
   background: transparent !important;
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;  
+}
+
 @media (min-width: 640px)  {
   .sm\:modal-middle .modal-box {
     max-width: fit-content;

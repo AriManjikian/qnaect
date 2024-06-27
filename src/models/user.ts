@@ -17,6 +17,11 @@ const userSchema = new Schema(
       required: true,
       unique: true,
     },
+    links: {
+      type: Map,
+      of: String,
+      default: {},
+    },
     image: String,
   },
   {
@@ -31,6 +36,7 @@ export interface UserType {
   name: string;
   email: string;
   username: string;
+  links: { [key: string]: string };
   image: string | StaticImport;
 }
 
