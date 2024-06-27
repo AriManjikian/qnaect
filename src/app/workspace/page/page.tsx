@@ -2,7 +2,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { LuLink, LuUser } from "react-icons/lu";
 import Image from "next/image";
-import { IoColorPaletteOutline } from "react-icons/io5";
+import { IoColorPaletteOutline, IoSave, IoTicket } from "react-icons/io5";
 import { themesArray } from "@/lib/themes";
 import { ThemeTile } from "@/components/ThemeTile";
 import ReactMarkdown from "react-markdown";
@@ -24,6 +24,7 @@ import {
 import NewTabLink from "@/components/NewTabLink";
 import { FaXTwitter } from "react-icons/fa6";
 import { Platform } from "aws-sdk/clients/cognitosync";
+import { CiSaveUp2 } from "react-icons/ci";
 const Page = () => {
   LoginIsRequiredClient();
 
@@ -202,14 +203,6 @@ const Page = () => {
                   />
                 </label>
               </span>
-              <li>
-                <button
-                  className="btn btn-primary rounded-lg"
-                  onClick={toggleModal}
-                >
-                  <IoColorPaletteOutline size={25} />
-                </button>
-              </li>
             </li>
             <li>
               <p className="mb-2 text-sm font-medium text-white">Occupation</p>
@@ -237,7 +230,7 @@ const Page = () => {
               />
             </li>
 
-            <li className="flex flex-wrap justify-center max-w-4/5">
+            <li className="flex flex-wrap justify-center max-w-dvw">
               {socialMediaPlatforms.map(({ platform, icon }) => (
                 <button
                   key={platform}
@@ -275,6 +268,26 @@ const Page = () => {
                   </button>
                 </div>
               )}
+            </li>
+            <li className="flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between w-full">
+              <div>
+                <button
+                  className="btn btn-primary rounded-lg"
+                  onClick={toggleModal}
+                >
+                  Change Theme
+                  <IoColorPaletteOutline size={25} />
+                </button>
+              </div>
+              <div>
+                <button
+                  className="btn btn-primary rounded-lg"
+                  onClick={toggleModal}
+                >
+                  Save Changes
+                  <CiSaveUp2 size={25} />
+                </button>
+              </div>
             </li>
           </ul>
         </div>
