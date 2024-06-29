@@ -8,11 +8,11 @@ export async function GET() {
   try {
     const session = await getServerSession(authConfig);
     await connectMongoDB();
-    const user = await User.findOne({ email: session?.user?.email });
+    // const user = await User.findOne({ email: session?.user?.email });
     //   if (!user) {
     //   }
 
-    console.log(session?.user, user);
+    console.log(session?.user);
 
     return NextResponse.json(null, { status: 200 });
   } catch (error) {
