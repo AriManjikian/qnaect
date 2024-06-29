@@ -27,8 +27,9 @@ export const authConfig: NextAuthOptions = {
         } else {
           websiteUrl = process.env.WEBSITE_URL;
         }
+        console.log(websiteUrl);
+        const apiUrl = `${websiteUrl}/api/createuser`;
         try {
-          console.log(websiteUrl);
           const res = await fetch(`${websiteUrl}/api/createuser`, {
             method: "POST",
             headers: {
