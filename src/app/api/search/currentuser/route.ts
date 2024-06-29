@@ -1,3 +1,7 @@
+export const config = {
+  runtime: "node",
+};
+
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import connectMongoDB from "@/lib/connectDB";
@@ -13,11 +17,12 @@ export async function GET() {
       return NextResponse.json(null, { status: 404 });
     }
 
-    return NextResponse.json(user, { status: 200 });
+    const response = NextResponse.json(user, { status: 200 });
+    return response;
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-      { message: "An error occured", error },
+      { message: "An error occurred", error },
       { status: 500 }
     );
   }
