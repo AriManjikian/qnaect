@@ -25,9 +25,10 @@ export const authConfig: NextAuthOptions = {
         if (process.env.DEV_ENVIRONMENT === "local") {
           websiteUrl = process.env.LOCAL_URL;
         } else {
-          websiteUrl = "";
+          websiteUrl = process.env.WEBSITE_URL;
         }
         try {
+          console.log(websiteUrl);
           const res = await fetch(`${websiteUrl}/api/createuser`, {
             method: "POST",
             headers: {
