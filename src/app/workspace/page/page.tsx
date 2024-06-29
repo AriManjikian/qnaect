@@ -209,12 +209,14 @@ const Page = () => {
 
   // Initiize state
   useEffect(() => {
-    setProfileImage(currentUser?.image || "");
-    setName(currentUser?.name || "");
-    setBioMarkdown(currentUser?.bio || "");
-    setOccupation(currentUser?.occupation || "");
-    setUserLinks(currentUser?.links || {});
-    setSelectedTheme(currentUser?.theme || "");
+    if (currentUser) {
+      setProfileImage(currentUser?.image || "");
+      setName(currentUser?.name || "");
+      setBioMarkdown(currentUser?.bio || "");
+      setOccupation(currentUser?.occupation || "");
+      setUserLinks(currentUser?.links || {});
+      setSelectedTheme(currentUser?.theme || "");
+    }
   }, [currentUser]);
 
   // Add claimed username
@@ -270,7 +272,7 @@ const Page = () => {
           <ul className="flex flex-col gap-5">
             <li className="flex items-end gap-4">
               {/* Profile Picture */}
-              {currentUserLoading ? (
+              {currentUserLoading && currentUser ? (
                 <div className="skeleton h-16 w-16 shrink-0 rounded-full"></div>
               ) : (
                 <>
