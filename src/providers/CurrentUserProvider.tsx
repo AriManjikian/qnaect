@@ -33,17 +33,16 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        if (status === "authenticated") {
-          const response = await fetch("/api/search/currentuser");
-          const userData = await response.json();
-          setCurrentUser(userData);
-        }
+        const response = await fetch("/api/search/currentuser");
+        const userData = await response.json();
+        setCurrentUser(userData);
       } catch (error) {
         console.error("Error fetching user:", error);
       }
     };
-
-    fetchUser();
+    if (status === "authenticated") {
+      fetchUser();
+    }
   }, [status]);
 
   return (
