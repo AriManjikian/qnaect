@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
+import { GiConsoleController } from "react-icons/gi";
 
 export const authConfig: NextAuthOptions = {
   providers: [
@@ -18,7 +19,7 @@ export const authConfig: NextAuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async signIn({ user, account, profile, email }) {
+    async signIn({ user, account, profile, credentials, email }) {
       if (user) {
         const { name, email, image } = user;
         let websiteUrl: string | undefined = "";
@@ -27,8 +28,6 @@ export const authConfig: NextAuthOptions = {
         } else {
           websiteUrl = process.env.WEBSITE_URL;
         }
-
-        console.log("website url", websiteUrl);
         try {
           const res = await fetch(`${websiteUrl}/api/createuser`, {
             method: "POST",
@@ -38,7 +37,6 @@ export const authConfig: NextAuthOptions = {
             body: JSON.stringify({
               name,
               email,
-              image,
             }),
           });
         } catch (error) {

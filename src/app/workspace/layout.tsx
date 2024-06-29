@@ -3,6 +3,7 @@ import Link from "next/link";
 import { LuMail, LuUser } from "react-icons/lu";
 import { MdOutlineContactPage, MdSettings } from "react-icons/md";
 import { RiQuestionAnswerLine } from "react-icons/ri";
+import { ToastContainer } from "react-toastify";
 
 export default function Layout({ children }: { children: any }) {
   return (
@@ -27,6 +28,7 @@ export default function Layout({ children }: { children: any }) {
           </ul>
         </div>
       </div>
+      <ToastContainer />
     </section>
   );
 }
