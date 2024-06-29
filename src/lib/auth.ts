@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
-import { GiConsoleController } from "react-icons/gi";
 
 export const authConfig: NextAuthOptions = {
   providers: [
@@ -26,7 +25,7 @@ export const authConfig: NextAuthOptions = {
         if (process.env.DEV_ENVIRONMENT === "local") {
           websiteUrl = process.env.LOCAL_URL;
         } else {
-          websiteUrl = process.env.WEBSITE_URL;
+          websiteUrl = "";
         }
         try {
           const res = await fetch(`${websiteUrl}/api/createuser`, {
