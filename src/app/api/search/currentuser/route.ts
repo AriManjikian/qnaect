@@ -7,8 +7,8 @@ import { authConfig } from "@/lib/auth";
 export async function GET() {
   try {
     const session = await getServerSession(authConfig);
-    //   await connectMongoDB();
-    //   const user = await User.findOne({ email: session?.user?.email });
+    await connectMongoDB();
+    const user = await User.findOne({ email: session?.user?.email });
     //   if (!user) {
     //   }
 
