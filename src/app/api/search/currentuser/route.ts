@@ -12,7 +12,9 @@ export async function GET() {
     //   if (!user) {
     //   }
 
-    return NextResponse.json(user, { status: 200 });
+    console.log(session?.user, user);
+
+    return NextResponse.json(null, { status: 200 });
   } catch (error) {
     return NextResponse.json(error, { status: 200 });
     //   console.log(error);
