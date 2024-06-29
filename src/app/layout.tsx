@@ -5,6 +5,7 @@ import SessionProvider from "@/providers/SessionProvider";
 import { getServerSession } from "next-auth";
 import { UserProvider } from "./Providers/CurrentUserProvider";
 import { ToastContainer } from "react-toastify";
+import { authConfig } from "@/lib/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession();
+  const session = await getServerSession(authConfig);
   return (
     <html lang="en">
       <body className={inter.className}>
