@@ -4,7 +4,7 @@ import { LuMail, LuUser } from "react-icons/lu";
 import { MdOutlineContactPage, MdSettings } from "react-icons/md";
 import { RiQuestionAnswerLine } from "react-icons/ri";
 import { ToastContainer } from "react-toastify";
-import { UserProvider } from "../Providers/CurrentUserProvider";
+import { UserProvider } from "../../providers/CurrentUserProvider";
 
 export default function Layout({ children }: { children: any }) {
   return (

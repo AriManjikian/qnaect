@@ -23,10 +23,10 @@ import {
 import NewTabLink from "@/components/NewTabLink";
 import { FaXTwitter } from "react-icons/fa6";
 import { CiSaveUp2 } from "react-icons/ci";
-import { useUser } from "@/app/Providers/CurrentUserProvider";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
+import { useUser } from "@/providers/CurrentUserProvider";
 
 type UserLinkType = {
   platform: string;
@@ -272,7 +272,7 @@ const Page = () => {
           <ul className="flex flex-col gap-5">
             <li className="flex items-end gap-4">
               {/* Profile Picture */}
-              {currentUser ? (
+              {!currentUser ? (
                 <div className="skeleton h-16 w-16 shrink-0 rounded-full"></div>
               ) : (
                 <>

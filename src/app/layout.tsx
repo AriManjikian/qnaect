@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import SessionProvider from "@/providers/SessionProvider";
 import { getServerSession } from "next-auth";
-import { UserProvider } from "./Providers/CurrentUserProvider";
+import { UserProvider } from "../providers/CurrentUserProvider";
 import { ToastContainer } from "react-toastify";
 import { authConfig } from "@/lib/auth";
 
