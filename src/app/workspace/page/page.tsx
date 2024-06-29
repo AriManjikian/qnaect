@@ -27,22 +27,11 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import { useUser } from "@/providers/CurrentUserProvider";
+import { socialMediaPlatforms } from "@/lib/platforms";
 
 type UserLinkType = {
   platform: string;
   url: string;
-};
-
-const socialMediaPlatforms: { [key: string]: JSX.Element } = {
-  github: <FaGithub />,
-  twitter: <FaXTwitter />,
-  youtube: <FaYoutube />,
-  instagram: <FaInstagram />,
-  linkedin: <FaLinkedin />,
-  dribble: <FaDribbble />,
-  twitch: <FaTwitch />,
-  telegram: <FaTelegram />,
-  medium: <FaMedium />,
 };
 
 const Page = () => {
@@ -155,6 +144,18 @@ const Page = () => {
 
   // Save changes to db
   const handleSaveChanges = async () => {
+    if (
+      name.length > maxNameLength ||
+      occupation.length > maxOccupationLength ||
+      bioMarkdown.length > maxBioLength
+    ) {
+      toast.error("Plese don't exceed maximum character length.", {
+        position: "bottom-right",
+        autoClose: 5000,
+      });
+      return;
+    }
+
     let image = profileImage;
     if (profileImage !== session?.user?.image && selectedFile) {
       const s3ImageURL = await uploadToS3(selectedFile);
@@ -194,8 +195,6 @@ const Page = () => {
         isLoading: false,
         autoClose: 5000,
       });
-
-      console.log(responseData.updatedUser.links);
     } catch (error: any) {
       toast.update(toastId, {
         render: "Failed to save changes!",
@@ -262,7 +261,7 @@ const Page = () => {
         });
       }
     }
-  }, []);
+  }, [currentUser]);
 
   return (
     <>
@@ -343,7 +342,16 @@ const Page = () => {
                   value={occupation}
                   onChange={(e) => setOccupation(e.target.value)}
                   required
-                />
+                />{" "}
+                <p
+                  className={`text-sm text-right ${getMaxLengthClass(
+                    maxOccupationLength - occupation.length
+                  )}`}
+                >
+                  {maxOccupationLength - occupation.length <= 15
+                    ? `(${maxOccupationLength - occupation.length})`
+                    : ""}
+                </p>
               </label>
             </li>
             {/* Bio Input */}
@@ -358,6 +366,15 @@ const Page = () => {
                 placeholder={`New Line (2 spaces + Enter)\n# Heading 1\n## Heading 2\n### Heading 3\n**Bold Text**\n*Italic Text*\n[Link Text](https://example.com)`}
                 onChange={(e) => setBioMarkdown(e.target.value)}
               />
+              <p
+                className={`text-sm text-right ${getMaxLengthClass(
+                  maxBioLength - bioMarkdown.length
+                )}`}
+              >
+                {maxBioLength - bioMarkdown.length <= 15
+                  ? `(${maxBioLength - bioMarkdown.length})`
+                  : ""}
+              </p>
             </li>
             {/* Social Links */}
             <li className="flex flex-wrap justify-center max-w-dvw">
@@ -443,7 +460,7 @@ const Page = () => {
               <ProfileSkeleton />
             ) : (
               <>
-                <span className="flex gap-4 items-center">
+                <span className="flex gap-4 items-start">
                   <div className="avatar rounded-full">
                     <div className="w-12 sm:w-12 rounded-full">
                       {profileImage && (

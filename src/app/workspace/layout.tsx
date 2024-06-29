@@ -127,7 +127,6 @@ const SidebarCard = () => {
           <h2 className="card-title text-white text-lg mb-2">
             Subscribe to our Newsletter
           </h2>
-          <span className="label-text text-white">Email Address</span>
           <label className="input input-nofocus input-bordered flex items-center gap-2">
             <LuMail />
             <input placeholder="example@gmail.com" type="text" required />
