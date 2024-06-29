@@ -8,13 +8,12 @@ export async function GET() {
   try {
     await connectMongoDB();
     const session = await getServerSession();
-    // const user = await User.findOne({ email: session?.user?.email });
-    //   if (!user) {
-    //   }
+    const user = await User.findOne({ email: session?.user?.email });
+    if (!user) {
+      return NextResponse.json(null, { status: 404 });
+    }
 
-    console.log(session?.user);
-
-    return NextResponse.json(null, { status: 200 });
+    return NextResponse.json(user, { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json(
