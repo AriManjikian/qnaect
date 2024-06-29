@@ -25,7 +25,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <SessionProvider session={session}>
           <ToastContainer />
-          <UserProvider>{children}</UserProvider>
+          {children}
         </SessionProvider>
       </body>
     </html>
