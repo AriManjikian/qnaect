@@ -11,12 +11,12 @@ import { UserType } from "@/models/user";
 
 interface UserContextType {
   currentUser: UserType | null;
-  currentUserLoading: boolean;
+  // currentUserLoading: boolean;
 }
 
 const UserContext = createContext<UserContextType>({
   currentUser: null,
-  currentUserLoading: true,
+  // currentUserLoading: true,
 });
 
 export const useUser = () => useContext(UserContext);
@@ -27,12 +27,12 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
-  const [currentUserLoading, setCurrentUserLoading] = useState(true);
+  // const [currentUserLoading, setCurrentUserLoading] = useState(true);
   const { data: session, status } = useSession();
 
   useEffect(() => {
     const fetchUser = async () => {
-      setCurrentUserLoading(true);
+      // setCurrentUserLoading(true);
       try {
         if (status === "authenticated") {
           const response = await fetch("/api/search/currentuser");
@@ -42,19 +42,19 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {
-        setCurrentUserLoading(false);
+        // setCurrentUserLoading(false);
       }
     };
 
     if (status === "authenticated") {
       fetchUser();
     } else {
-      setCurrentUserLoading(false);
+      // setCurrentUserLoading(false);
     }
   }, [status]);
 
   return (
-    <UserContext.Provider value={{ currentUser, currentUserLoading }}>
+    <UserContext.Provider value={{ currentUser }}>
       {children}
     </UserContext.Provider>
   );

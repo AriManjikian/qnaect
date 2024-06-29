@@ -49,7 +49,7 @@ const Page = () => {
   LoginIsRequiredClient();
 
   const { data: session } = useSession();
-  const { currentUser, currentUserLoading } = useUser();
+  const { currentUser } = useUser();
 
   const [name, setName] = useState<string>("");
   const [occupation, setOccupation] = useState<string>("");
@@ -272,7 +272,7 @@ const Page = () => {
           <ul className="flex flex-col gap-5">
             <li className="flex items-end gap-4">
               {/* Profile Picture */}
-              {currentUserLoading && currentUser ? (
+              {currentUser ? (
                 <div className="skeleton h-16 w-16 shrink-0 rounded-full"></div>
               ) : (
                 <>
@@ -439,7 +439,7 @@ const Page = () => {
             className="rounded-[2rem] no-scrollbar overflow-y-scroll w-[272px] h-[572px] p-4 pt-10"
             data-theme={selectedTheme}
           >
-            {currentUserLoading ? (
+            {!currentUser ? (
               <ProfileSkeleton />
             ) : (
               <>
