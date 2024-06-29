@@ -6,8 +6,8 @@ import { authConfig } from "@/lib/auth";
 
 export async function GET() {
   try {
+    await connectMongoDB();
     const session = await getServerSession();
-    // await connectMongoDB();
     // const user = await User.findOne({ email: session?.user?.email });
     //   if (!user) {
     //   }
@@ -16,11 +16,10 @@ export async function GET() {
 
     return NextResponse.json(null, { status: 200 });
   } catch (error) {
-    return NextResponse.json(error, { status: 200 });
-    //   console.log(error);
-    //   return NextResponse.json(
-    //     { message: "An error occured", error },
-    //     { status: 500 }
-    //   );
+    console.log(error);
+    return NextResponse.json(
+      { message: "An error occured", error },
+      { status: 500 }
+    );
   }
 }
