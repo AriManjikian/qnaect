@@ -12,7 +12,7 @@ export async function GET() {
     //   if (!user) {
     //   }
 
-    //   return NextResponse.json(user, { status: 200 });
+    return NextResponse.json(user, { status: 200 });
   } catch (error) {
     //   console.log(error);
     //   return NextResponse.json(
@@ -20,5 +20,4 @@ export async function GET() {
     //     { status: 500 }
     //   );
   }
-  return NextResponse.json(null, { status: 404 });
 }
