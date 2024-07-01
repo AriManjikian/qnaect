@@ -1,38 +1,35 @@
 "use client";
 import Link from "next/link";
-import { LuMail, LuUser } from "react-icons/lu";
+import { LuMail } from "react-icons/lu";
 import { MdOutlineContactPage, MdSettings } from "react-icons/md";
 import { RiQuestionAnswerLine } from "react-icons/ri";
 import { ToastContainer } from "react-toastify";
-import { UserProvider } from "../../providers/CurrentUserProvider";
 
 export default function Layout({ children }: { children: any }) {
   return (
-    <UserProvider>
-      <section data-theme="" className="h-dvh">
-        <WorkspaceNav />
-        <div className="drawer md:drawer-open h-full w-full">
-          <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-          <div className="drawer-content pt-16 md:pl-80 lg:pt-0">
-            {/* Page content here */}
-            {children}
-          </div>
-          <div className="drawer-side">
-            <label
-              htmlFor="my-drawer-2"
-              aria-label="close sidebar"
-              className="drawer-overlay"
-            ></label>
-            <ul className="flex flex-col menu bg-base-300 text-base-content fixed min-h-dvh w-80 p-0">
-              {/* Sidebar content here */}
-              <SidebarContent />
-              <SidebarCard />
-            </ul>
-          </div>
+    <section data-theme="" className="h-dvh">
+      <WorkspaceNav />
+      <div className="drawer md:drawer-open h-full w-full">
+        <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content pt-16 md:pl-80 lg:pt-0">
+          {/* Page content here */}
+          {children}
         </div>
-        <ToastContainer />
-      </section>
-    </UserProvider>
+        <div className="drawer-side">
+          <label
+            htmlFor="my-drawer-2"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <ul className="flex flex-col menu bg-base-300 text-base-content fixed min-h-dvh w-80 p-0">
+            {/* Sidebar content here */}
+            <SidebarContent />
+            <SidebarCard />
+          </ul>
+        </div>
+      </div>
+      <ToastContainer />
+    </section>
   );
 }
 
