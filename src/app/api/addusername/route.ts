@@ -10,12 +10,15 @@ export async function POST(request: any) {
     const session = await getServerSession(authConfig);
     const { username } = await request.json();
 
-    const currentUser = await User.findOne({ email: session?.user?.email });
+    const existingUsername = await User.findOne({
+      username: username,
+      email: { $ne: session?.user?.email },
+    });
 
-    if (currentUser.username) {
+    if (existingUsername) {
       return NextResponse.json(
-        { message: "You already have a claimed link, change it in settings." },
-        { status: 500 }
+        { message: "Username already taken." },
+        { status: 409 }
       );
     }
 

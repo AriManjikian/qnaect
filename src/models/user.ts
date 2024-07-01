@@ -21,7 +21,7 @@ const userSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      default: "First Name",
     },
     occupation: {
       type: String,

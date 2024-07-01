@@ -47,6 +47,9 @@
   -ms-overflow-style: none; 
   scrollbar-width: none;  
 }
+.tabs-boxed .tab {
+  border-radius: 0.5rem;
+}
 
 @media (min-width: 640px)  {
   .sm\:modal-middle .modal-box {

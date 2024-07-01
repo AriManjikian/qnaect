@@ -8,12 +8,13 @@ export async function POST(request: any) {
     await connectMongoDB();
     const { name, email } = await request.json();
     const returningUser = await User.findOne({ email });
+
     if (returningUser) {
       console.log("Returning user found:", returningUser);
       return NextResponse.json({ message: "Returning User" }, { status: 200 });
     }
 
-    await User.create({ name, email });
+    await User.create({ email });
 
     return NextResponse.json({ message: "User Created" }, { status: 201 });
   } catch (error) {

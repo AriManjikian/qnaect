@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, use, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { LuLink, LuUser } from "react-icons/lu";
 import Image from "next/image";
 import { IoColorPaletteOutline } from "react-icons/io5";
@@ -9,19 +9,8 @@ import ReactMarkdown from "react-markdown";
 import { useSession } from "next-auth/react";
 import { LoginIsRequiredClient } from "@/lib/auth";
 import { FiCamera } from "react-icons/fi";
-import {
-  FaBriefcase,
-  FaDribbble,
-  FaGithub,
-  FaInstagram,
-  FaLinkedin,
-  FaMedium,
-  FaTelegram,
-  FaTwitch,
-  FaYoutube,
-} from "react-icons/fa";
+import { FaBriefcase } from "react-icons/fa";
 import NewTabLink from "@/components/NewTabLink";
-import { FaXTwitter } from "react-icons/fa6";
 import { CiSaveUp2 } from "react-icons/ci";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -55,6 +44,7 @@ const Page = () => {
   const [hoverImageInput, setHoverImageInput] = useState(false);
   const [URLInput, setURLInput] = useState<string>("");
   const [selectedPlatform, setSelectedPlatform] = useState<string>("");
+  const [selectedTab, setSelectedTab] = useState<string>("ask");
 
   // Max Lengths
   const maxNameLength = 26;
@@ -280,13 +270,13 @@ const Page = () => {
                     onMouseEnter={() => setHoverImageInput(true)}
                     onMouseLeave={() => setHoverImageInput(false)}
                   >
-                    <div className="w-14 sm:w-16 rounded-full overflow-hidden">
+                    <div className="size-16 rounded-full overflow-hidden">
                       {profileImage && (
                         <Image
                           src={profileImage}
                           alt="Profile"
-                          width={96}
-                          height={96}
+                          width={300}
+                          height={300}
                         />
                       )}
                       {/* File Selection */}
@@ -467,8 +457,8 @@ const Page = () => {
                         <Image
                           src={profileImage}
                           alt=""
-                          width={96}
-                          height={96}
+                          width={2000}
+                          height={2000}
                         />
                       )}
                     </div>
@@ -522,7 +512,26 @@ const Page = () => {
                 )}
 
                 <div className="divider m-0"></div>
-
+                <div role="tablist" className="tabs tabs-boxed rounded-lg">
+                  <button
+                    role="tab"
+                    className={`tab text-xs ${
+                      selectedTab === "ask" ? "tab-active" : ""
+                    }`}
+                    onClick={() => setSelectedTab("ask")}
+                  >
+                    Ask Question
+                  </button>
+                  <button
+                    role="tab"
+                    className={`tab text-xs ${
+                      selectedTab === "answer" ? "tab-active" : ""
+                    }`}
+                    onClick={() => setSelectedTab("answer")}
+                  >
+                    View Answers
+                  </button>
+                </div>
                 <div className="relative">
                   <textarea
                     className="textarea textarea-bordered rounded-lg input-nofocus w-full mt-4 bg-base-300 placeholder:text-base-content min-h-24"
