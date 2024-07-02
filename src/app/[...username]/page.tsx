@@ -10,9 +10,10 @@ import ReactMarkdown from "react-markdown";
 
 export default function Profile({ params }: { params: { username: string } }) {
   const [profileData, setProfileData] = useState<UserType | null>(null);
-
+  const [loadingData, setLoadingData] = useState<boolean>(false);
   useEffect(() => {
     try {
+      setLoadingData(true);
       const fetchData = async () => {
         const response = await fetch("/api/search/profiledata", {
           method: "POST",
@@ -26,21 +27,43 @@ export default function Profile({ params }: { params: { username: string } }) {
         const responseData = await response.json();
 
         setProfileData(responseData);
+        setLoadingData(false);
       };
 
       fetchData();
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
+  if (loadingData) {
+    return (
+      <section className="flex flex-col md:flex-row">
+        <div className="p-6 min-h-dvh w-full md:w-fit max-w-sm md:bg-base-300">
+          <div className="md:bg-base-100 md:p-5 md:rounded-lg">
+            <div className="flex w-52 flex-col gap-4">
+              <div className="flex items-center gap-4">
+                <div className="skeleton h-16 w-16 shrink-0 rounded-full"></div>
+                <div className="flex flex-col gap-4">
+                  <div className="skeleton h-4 w-20"></div>
+                  <div className="skeleton h-4 w-28"></div>
+                </div>
+              </div>
+              <div className="skeleton h-32 w-full"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="flex flex-col md:flex-row">
-      <div
-        className="p-6 min-h-dvh w-full md:w-fit md:max-w-sm"
-        data-theme={profileData?.theme}
-      >
-        {!profileData ? (
-          <ProfileSkeleton />
-        ) : (
+    <section
+      className="flex flex-col md:flex-row"
+      data-theme={profileData?.theme}
+    >
+      <div className="p-6 min-h-dvh w-full md:w-fit md:max-w-sm md:bg-base-300">
+        {profileData && (
           <>
             <span className="flex gap-4 items-start">
               <div className="avatar rounded-full">
