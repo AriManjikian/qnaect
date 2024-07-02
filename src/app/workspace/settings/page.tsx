@@ -47,15 +47,15 @@ const Page = () => {
   }, [currentUser]);
 
   return (
-    <section className="flex gap-4 flex-col p-20 min-h-dvh max-w-2xl">
-      <div className="bg-base-300 p-5 rounded-lg flex flex-col gap-4">
+    <section className="flex gap-4 flex-col p-4 md:p-20 min-h-dvh w-dvw md:max-w-2xl">
+      <div className="bg-base-300 p-5 rounded-lg flex flex-col gap-4 w-full">
         {currentUser?.username ? (
           <h1 className="text-lg font-bold">Edit your domain</h1>
         ) : (
           <h1 className="text-lg font-bold">Claim your domain </h1>
         )}
-        <div className="join lg:border-2 lg:rounded-r-xl lg:rounded-l-lg lg:border-transparent lg:focus-within:border-primary">
-          <label className="input input-nofocus input-group border-0 flex items-center gap-2 join-item rounded-l-lg w-full">
+        <div className="flex flex-col md:flex-row lg:border-2 lg:rounded-r-xl lg:rounded-l-lg lg:border-transparent lg:focus-within:border-primary">
+          <label className="input input-nofocus input-group border-0 flex items-center gap-2 md:rounded-r-none w-full">
             qnaect.com/
             <input
               type="text"
@@ -66,9 +66,9 @@ const Page = () => {
           </label>{" "}
           <button
             onClick={handleAddUsername}
-            className="btn btn-primary join-item rounded-r-lg"
+            className="btn btn-primary md:rounded-l-none"
           >
-            Claim
+            {currentUser?.username ? "Submit" : ""}
           </button>
         </div>
       </div>
