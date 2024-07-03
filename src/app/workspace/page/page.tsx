@@ -255,7 +255,7 @@ const Page = () => {
 
   return (
     <>
-      <section className="flex flex-col lg:flex-row pt-5 p-4 lg:gap-10 justify-center items-center min-h-dvh">
+      <section className="flex flex-col lg:flex-row pt-5 p-4 lg:gap-10 justify-center items-start md:pt-10 min-h-dvh">
         <div className="p-5 max-w-4/5">
           {/* Page Form */}
           <ul className="flex flex-col gap-5">

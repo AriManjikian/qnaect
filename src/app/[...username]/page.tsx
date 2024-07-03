@@ -1,6 +1,5 @@
 "use client";
 import NewTabLink from "@/components/NewTabLink";
-import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import { socialMediaPlatforms } from "@/lib/platforms";
 import { UserType } from "@/models/user";
 import Image from "next/image";
@@ -11,6 +10,24 @@ import ReactMarkdown from "react-markdown";
 export default function Profile({ params }: { params: { username: string } }) {
   const [profileData, setProfileData] = useState<UserType | null>(null);
   const [loadingData, setLoadingData] = useState<boolean>(false);
+  const [questionInput, setQuestionInput] = useState<string>("");
+  const [loadingQuestion, setLoadingQuestion] = useState<boolean>(false);
+
+  const handleQuestion = async () => {
+    try {
+      const response = await fetch("/api/askquestion", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: params.username.toString(),
+          question: questionInput,
+        }),
+      });
+    } catch (error) {}
+  };
+
   useEffect(() => {
     try {
       setLoadingData(true);
@@ -129,8 +146,13 @@ export default function Profile({ params }: { params: { username: string } }) {
                 className="textarea textarea-bordered rounded-lg input-nofocus w-full mt-4 bg-base-300 placeholder:text-base-content min-h-24"
                 placeholder="Ask me a question!"
                 rows={5}
+                value={questionInput}
+                onChange={(e) => setQuestionInput(e.target.value)}
               ></textarea>
-              <button className="btn btn-primary rounded-lg btn-sm absolute bottom-4 right-2">
+              <button
+                className="btn btn-primary rounded-lg btn-sm absolute bottom-4 right-2"
+                onClick={handleQuestion}
+              >
                 Send
               </button>
             </div>
