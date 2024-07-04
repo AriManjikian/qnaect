@@ -2,6 +2,7 @@
 import NewTabLink from "@/components/NewTabLink";
 import { socialMediaPlatforms } from "@/lib/platforms";
 import { UserType } from "@/models/user";
+import { div } from "@tensorflow/tfjs";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { LuLink } from "react-icons/lu";
@@ -15,6 +16,7 @@ export default function Profile({ params }: { params: { username: string } }) {
 
   const handleQuestion = async () => {
     try {
+      setLoadingQuestion(true);
       const response = await fetch("/api/askquestion", {
         method: "POST",
         headers: {
@@ -25,7 +27,12 @@ export default function Profile({ params }: { params: { username: string } }) {
           question: questionInput,
         }),
       });
-    } catch (error) {}
+
+      setLoadingQuestion(false);
+      setQuestionInput("");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -153,7 +160,11 @@ export default function Profile({ params }: { params: { username: string } }) {
                 className="btn btn-primary rounded-lg btn-sm absolute bottom-4 right-2"
                 onClick={handleQuestion}
               >
-                Send
+                {loadingQuestion ? (
+                  <div className="loading loading-spinner loading-md"></div>
+                ) : (
+                  "Send"
+                )}
               </button>
             </div>
           </>
