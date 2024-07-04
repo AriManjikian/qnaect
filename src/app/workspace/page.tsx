@@ -76,7 +76,7 @@ export default function Workspace() {
       <div className="flex flex-wrap gap-4 p-4">
         {questionList.map((question: QuestionType) => {
           return (
-            <div className="bg-base-200 p-6 rounded-lg">
+            <div key={question._id} className="bg-base-200 p-6 rounded-lg">
               <p>{question.question}</p>
             </div>
           );
