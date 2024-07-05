@@ -2,10 +2,55 @@
 import { LoginIsRequiredClient } from "@/lib/auth";
 import { QuestionType } from "@/models/question";
 import { useUser } from "@/providers/CurrentUserProvider";
-import { div } from "@tensorflow/tfjs";
+import { kmeans } from "ml-kmeans";
+import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 
-import { signOut } from "next-auth/react";
 import React, { useEffect, useState } from "react";
+
+// Calculate the WCSS for different numbers of clusters
+const calculateWCSS = (data: number[][], k: number): number => {
+  const kmeansResult: KMeansResult = kmeans(data, k, {
+    initialization: "kmeans++",
+  });
+  let wcss: number = 0;
+  for (let i = 0; i < k; i++) {
+    const clusterPoints: number[][] = data.filter(
+      (_, idx) => kmeansResult.clusters[idx] === i
+    );
+    const centroid: number[] = kmeansResult.centroids[i];
+    const distances: number[] = clusterPoints.map((point) =>
+      Math.sqrt(
+        point.reduce((sum, val, j) => sum + Math.pow(val - centroid[j], 2), 0)
+      )
+    );
+    wcss += distances.reduce((sum, val) => sum + val, 0);
+  }
+  return wcss;
+};
+
+// Determine the elbow point
+const calculateElbowPoint = (wcssValues: number[]): number => {
+  const diffs: number[] = [];
+  for (let i = 1; i < wcssValues.length; i++) {
+    diffs.push(wcssValues[i - 1] - wcssValues[i]);
+  }
+  let maxDiff: number = 0;
+  let elbowPoint: number = 1;
+  for (let i = 1; i < diffs.length; i++) {
+    const diffChange: number = diffs[i - 1] - diffs[i];
+    if (diffChange > maxDiff) {
+      maxDiff = diffChange;
+      elbowPoint = i + 1;
+    }
+  }
+  return elbowPoint;
+};
+
+// Group questions by cluster
+type GroupType = {
+  group: string;
+  questions: QuestionType[];
+};
 
 export default function Workspace() {
   LoginIsRequiredClient();
@@ -14,6 +59,52 @@ export default function Workspace() {
 
   const [username, setUsername] = useState<string | undefined>("");
   const [questionList, setQuestionList] = useState<QuestionType[]>([]);
+  const [kmeansGroups, setKmeansGroups] = useState<GroupType[]>([]);
+  const [groupCount, setGroupCount] = useState<number>(10);
+
+  const generateGroups = async () => {
+    try {
+      // Extract embeddings from questions
+      const embeddingsArr: number[][] = questionList.map((q) => q.embedding);
+      console.log(groupCount);
+      if (groupCount === 0 || groupCount > embeddingsArr.length) {
+        console.log("Calculating optimal cluster count...");
+        // Determine optimal number of clusters
+        const maxClusters: number = Math.min(10, embeddingsArr.length);
+        const wcssValues: number[] = [];
+        for (let k = 1; k <= maxClusters; k++) {
+          const wcss: number = calculateWCSS(embeddingsArr, k);
+          wcssValues.push(wcss);
+        }
+        const optimalClusters: number = await calculateElbowPoint(wcssValues);
+        console.log(optimalClusters);
+        await setGroupCount(optimalClusters);
+      }
+
+      console.log("Cluster count is", groupCount);
+
+      // Perform K-means clustering
+      const kmeansResult: KMeansResult = kmeans(embeddingsArr, groupCount, {
+        initialization: "kmeans++",
+      });
+
+      const groups: GroupType[] = Array.from(
+        { length: groupCount },
+        (_, i) => ({
+          group: `group ${i + 1}`,
+          questions: [],
+        })
+      );
+
+      questionList.forEach((question, index) => {
+        const cluster: number = kmeansResult.clusters[index];
+        groups[cluster].questions.push(question);
+      });
+
+      setKmeansGroups(groups);
+      console.log(groups);
+    } catch (error) {}
+  };
 
   const getQuestionList = async () => {
     try {
@@ -32,7 +123,7 @@ export default function Workspace() {
       }
 
       const responseData = await response.json();
-      setQuestionList(responseData);
+      setQuestionList(responseData.questionList);
     } catch (error) {
       console.log(error);
     }
@@ -73,15 +164,29 @@ export default function Workspace() {
 
   return (
     <>
-      <div className="flex flex-wrap gap-4 p-4">
-        {questionList.map((question: QuestionType) => {
-          return (
-            <div key={question._id} className="bg-base-200 p-6 rounded-lg">
-              <p>{question.question}</p>
-            </div>
-          );
-        })}
-      </div>
+      <section className="p-4 flex flex-col gap-4">
+        <div className="navbar bg-base-200 w-full rounded-lg">
+          <button className="btn btn-primary ml-auto" onClick={generateGroups}>
+            Generate Groups
+          </button>
+        </div>
+        {questionList && (
+          <div className="flex flex-wrap gap-4 w-fit">
+            {kmeansGroups.map((group: GroupType) => (
+              <div key={group.group} className="flex flex-col gap-4">
+                {group.questions.map((question: QuestionType) => (
+                  <div
+                    key={question._id}
+                    className="bg-base-200 p-6 rounded-lg w-56"
+                  >
+                    <p>{question.question}</p>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </>
   );
 }

@@ -24,7 +24,7 @@ export default function Layout({ children }: { children: any }) {
           <ul className="flex flex-col menu bg-base-300 text-base-content fixed min-h-dvh w-80 p-0">
             {/* Sidebar content here */}
             <SidebarContent />
-            <SidebarCard />
+            {/* <SidebarCard /> */}
           </ul>
         </div>
       </div>

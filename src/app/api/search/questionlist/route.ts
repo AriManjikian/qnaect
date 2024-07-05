@@ -1,19 +1,20 @@
 import { NextResponse } from "next/server";
 import connectMongoDB from "@/lib/connectDB";
-import User from "@/models/user";
-import Question from "@/models/question";
+import Question, { QuestionType } from "@/models/question";
 
-export async function POST(request: any) {
+export async function POST(request: Request) {
   try {
-    const { username } = await request.json();
+    const { username }: { username: string } = await request.json();
     await connectMongoDB();
-    const questionList = await Question.find({ username: username });
+    const questionList: QuestionType[] = await Question.find({
+      username: username,
+    });
 
-    return NextResponse.json(questionList, { status: 200 });
+    return NextResponse.json({ questionList }, { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-      { message: "An error occured", error },
+      { message: "An error occurred", error },
       { status: 500 }
     );
   }
