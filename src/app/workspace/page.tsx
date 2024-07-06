@@ -164,28 +164,9 @@ export default function Workspace() {
 
   return (
     <>
-      <section className="p-4 flex flex-col gap-4">
-        <div className="navbar bg-base-200 w-full rounded-lg">
-          <button className="btn btn-primary ml-auto" onClick={generateGroups}>
-            Generate Groups
-          </button>
-        </div>
-        {questionList && (
-          <div className="flex flex-wrap gap-4 w-fit">
-            {kmeansGroups.map((group: GroupType) => (
-              <div key={group.group} className="flex flex-col gap-4">
-                {group.questions.map((question: QuestionType) => (
-                  <div
-                    key={question._id}
-                    className="bg-base-200 p-6 rounded-lg w-56"
-                  >
-                    <p>{question.question}</p>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        )}
+      <section className="flex w-full h-full">
+        <div className="w-full h-full"></div>
+        <div className="bg-base-200 w-72 h-full hidden md:block"></div>
       </section>
     </>
   );

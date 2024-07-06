@@ -63,7 +63,7 @@ export default function Profile({ params }: { params: { username: string } }) {
   if (loadingData) {
     return (
       <section className="flex flex-col md:flex-row">
-        <div className="p-6 min-h-dvh w-full md:w-fit max-w-sm md:bg-base-300">
+        <div className="p-6 min-h-dvh w-full md:w-fit max-w-sm md:bg-base-200">
           <div className="md:bg-base-100 md:p-5 md:rounded-lg">
             <div className="flex w-52 flex-col gap-4">
               <div className="flex items-center gap-4">
@@ -86,7 +86,7 @@ export default function Profile({ params }: { params: { username: string } }) {
       className="flex flex-col md:flex-row"
       data-theme={profileData?.theme}
     >
-      <div className="p-6 min-h-dvh w-full md:w-fit md:max-w-sm md:bg-base-300">
+      <div className="p-6 min-h-dvh w-full md:w-fit md:max-w-sm md:bg-base-200">
         {profileData && (
           <>
             <span className="flex gap-4 items-start">
@@ -150,7 +150,7 @@ export default function Profile({ params }: { params: { username: string } }) {
 
             <div className="relative">
               <textarea
-                className="textarea textarea-bordered rounded-lg input-nofocus w-full mt-4 bg-base-300 placeholder:text-base-content min-h-24"
+                className="textarea textarea-bordered rounded-lg input-nofocus w-full mt-4 bg-base-200 placeholder:text-base-content min-h-24"
                 placeholder="Ask me a question!"
                 rows={5}
                 value={questionInput}

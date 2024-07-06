@@ -48,7 +48,7 @@ const Page = () => {
 
   return (
     <section className="flex gap-4 flex-col p-4 md:p-20 min-h-dvh w-dvw md:max-w-2xl">
-      <div className="bg-base-300 p-5 rounded-lg flex flex-col gap-4 w-full">
+      <div className="bg-base-200 p-5 rounded-lg flex flex-col gap-4 w-full">
         {currentUser?.username ? (
           <h1 className="text-lg font-bold">Edit your domain</h1>
         ) : (

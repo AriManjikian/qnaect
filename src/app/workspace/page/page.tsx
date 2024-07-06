@@ -255,7 +255,7 @@ const Page = () => {
 
   return (
     <>
-      <section className="flex flex-col lg:flex-row pt-5 p-4 lg:gap-10 justify-center items-start md:pt-10 min-h-dvh">
+      <section className="flex flex-col lg:flex-row pt-5 p-4 lg:gap-10 justify-center items-center md:items-start md:pt-10 min-h-dvh">
         <div className="p-5 max-w-4/5">
           {/* Page Form */}
           <ul className="flex flex-col gap-5">
@@ -534,7 +534,7 @@ const Page = () => {
                 </div>
                 <div className="relative">
                   <textarea
-                    className="textarea textarea-bordered rounded-lg input-nofocus w-full mt-4 bg-base-300 placeholder:text-base-content min-h-24"
+                    className="textarea textarea-bordered rounded-lg input-nofocus w-full mt-4 bg-base-200 placeholder:text-base-content min-h-24"
                     placeholder="Ask me a question!"
                     rows={5}
                   ></textarea>
@@ -555,7 +555,7 @@ const Page = () => {
             open
             className="modal modal-bottom sm:modal-middle max-w-full z-50"
           >
-            <div className="modal-box flex gap-4 flex-col z-40 bg-base-300 pt-20 sm:pt-6">
+            <div className="modal-box flex gap-4 flex-col z-40 bg-base-200 pt-20 sm:pt-6">
               <button className="btn btn-error w-24" onClick={closeModal}>
                 Close
               </button>
