@@ -7,6 +7,8 @@ import { CgEditUnmask } from "react-icons/cg";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 
 import React, { useEffect, useState } from "react";
+import { div } from "@tensorflow/tfjs";
+import QuestionTile from "@/components/QuestionTile";
 
 // Calculate the WCSS for different numbers of clusters
 const calculateWCSS = (data: number[][], k: number): number => {
@@ -177,7 +179,18 @@ export default function Workspace() {
   return (
     <>
       <section className="flex w-full h-full">
-        <div className="w-full h-full"></div>
+        <section className="h-full w-full p-6">
+          <span className="flex gap-2">
+            <div className="badge badge-primary my-4 p-4">All Questions</div>
+            <div className="badge badge-neutral my-4 p-4">Similar Groups</div>
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {questionList.map((questionData, key) => {
+              return <QuestionTile questionData={questionData} key={key} />;
+            })}
+          </div>
+        </section>
+
         <div className="bg-base-200 w-96 h-full hidden md:block p-4 pt-20">
           <div className="flex flex-col gap-2">
             <p className="text-md font-bold flex items-center gap-2">
