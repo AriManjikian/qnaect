@@ -3,6 +3,7 @@ import { LoginIsRequiredClient } from "@/lib/auth";
 import { QuestionType } from "@/models/question";
 import { useUser } from "@/providers/CurrentUserProvider";
 import { kmeans } from "ml-kmeans";
+import { CgEditUnmask } from "react-icons/cg";
 import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 
 import React, { useEffect, useState } from "react";
@@ -61,6 +62,17 @@ export default function Workspace() {
   const [questionList, setQuestionList] = useState<QuestionType[]>([]);
   const [kmeansGroups, setKmeansGroups] = useState<GroupType[]>([]);
   const [groupCount, setGroupCount] = useState<number>(10);
+
+  const [rangeValue, setRangeValue] = useState(2);
+
+  const handleRangeChange = (event: any) => {
+    let value = event.target.value;
+    if (value > questionList.length) {
+      value = questionList.length;
+    }
+
+    setRangeValue(value);
+  };
 
   const generateGroups = async () => {
     try {
@@ -166,7 +178,57 @@ export default function Workspace() {
     <>
       <section className="flex w-full h-full">
         <div className="w-full h-full"></div>
-        <div className="bg-base-200 w-72 h-full hidden md:block"></div>
+        <div className="bg-base-200 w-96 h-full hidden md:block p-4 pt-20">
+          <div className="flex flex-col gap-2">
+            <p className="text-md font-bold flex items-center gap-2">
+              <CgEditUnmask className="text-xl" />
+              Advanced Customization
+            </p>
+            <label className="form-control">
+              <div className="label">
+                <span className="label-text">Grouping Algorithm</span>
+              </div>
+              <select className="select select-bordered w-full input-nofocus">
+                <option>K-Means</option>
+                <option>DBSCAN</option>
+                <option>GMM</option>
+                <option>HAC</option>
+              </select>
+            </label>
+            <label className="form-control">
+              <div className="label">
+                <span className="label-text">Distance Metric</span>
+              </div>
+              <select className="select select-bordered w-full input-nofocus">
+                <option>Euclidian</option>
+                <option>Cosine</option>
+                <option>Manhattan</option>
+                <option>Correlation</option>
+              </select>
+            </label>
+            <label className="form-control">
+              <div className="label">
+                <span className="label-text">Group Count</span>
+              </div>
+              <div className="flex items-center justify-center gap-5">
+                <input
+                  type="range"
+                  min={0}
+                  max={questionList?.length}
+                  value={rangeValue}
+                  onChange={(e) => handleRangeChange(e)}
+                  className="range range-xs"
+                />
+                <input
+                  type="text"
+                  className="input input-bordered size-12 input-nofocus text-xs p-0 text-center"
+                  value={rangeValue}
+                  onChange={(e) => handleRangeChange(e)}
+                />
+              </div>
+            </label>
+          </div>
+        </div>
       </section>
     </>
   );

@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState, MutableRefObject } from "react";
-import {
-  FaArrowRight,
-  FaHandshake,
-  FaQuestion,
-  FaTrophy,
-} from "react-icons/fa";
+import { FaArrowRight, FaHandshake, FaTrophy } from "react-icons/fa";
 import Image from "next/image";
 import profile from "@/public/profile.jpg";
 import { FaQuestionCircle } from "react-icons/fa";
 import FeaturedComponent from "./FeaturedComponent";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { LuLink } from "react-icons/lu";
+import ReactMarkdown from "react-markdown";
+import NewTabLink from "./NewTabLink";
+import { socialMediaPlatforms } from "@/lib/platforms";
 
 const LandingHero = () => {
   const [username, setUsername] = useState<string>("");
@@ -165,6 +164,84 @@ const LandingHero = () => {
           <div className="h-[46px] w-[3px] bg-zinc-950 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
           <div className="h-[46px] w-[3px] bg-zinc-950 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
           <div className="h-[64px] w-[3px] bg-zinc-950 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
+          <div className="rounded-[2rem] no-scrollbar overflow-y-scroll w-[272px] h-[572px] p-4 pt-10 bg-base-100">
+            <>
+              <span className="flex gap-4 items-start">
+                <div className="avatar rounded-full">
+                  <div className="w-12 sm:w-12 rounded-full">
+                    <Image src={profile} alt="" width={2000} height={2000} />
+                  </div>
+                </div>
+                <span className="flex flex-col max-w-28">
+                  <h1 className="text-md font-extrabold text-clip overflow-hidden w-full ">
+                    Your Name
+                  </h1>
+                  <h2 className="text-sm text-clip overflow-hidden">
+                    Content Creator
+                  </h2>
+                </span>
+                <button className="btn btn-primary btn-sm ml-auto rounded-lg">
+                  <LuLink />
+                </button>
+              </span>
+              <ReactMarkdown
+                className="pt-5 whitespace-normal markdown text-sm overflow-wrap-break-word"
+                components={{
+                  a: ({ node, ...props }) => (
+                    <NewTabLink href={props.href}>{props.children}</NewTabLink>
+                  ),
+                }}
+              >
+                {`Hey, this is qnaect!  
+                    Follow us on our journey.
+                  `}
+              </ReactMarkdown>
+              {Object.keys(socialMediaPlatforms).length > 0 && (
+                <>
+                  <div className="divider m-0"></div>
+                  <span
+                    data-tip="Scrolls on mobile"
+                    className="lg:tooltip w-full"
+                  >
+                    <span className="flex overflow-x-auto no-scrollbar carousel z-30 ">
+                      {Object.entries(socialMediaPlatforms).map(
+                        ([key, platform]) => (
+                          <a
+                            key={key}
+                            className="btn btn-ghost carousel-item text-xl"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {socialMediaPlatforms[key]}
+                          </a>
+                        )
+                      )}
+                    </span>
+                  </span>
+                </>
+              )}
+
+              <div className="divider m-0"></div>
+              <div role="tablist" className="tabs tabs-boxed rounded-lg">
+                <button role="tab" className="tab text-xs tab-active">
+                  Ask Question
+                </button>
+                <button role="tab" className="tab text-xs">
+                  View Answers
+                </button>
+              </div>
+              <div className="relative">
+                <textarea
+                  className="textarea textarea-bordered rounded-lg input-nofocus w-full mt-4 bg-base-200 placeholder:text-base-content min-h-24"
+                  placeholder="Ask me a question!"
+                  rows={5}
+                ></textarea>
+                <button className="btn btn-primary rounded-lg btn-sm absolute bottom-4 right-2">
+                  Send
+                </button>
+              </div>
+            </>
+          </div>
         </div>
       </div>
       <FeaturedComponent />
