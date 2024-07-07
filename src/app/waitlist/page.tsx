@@ -6,7 +6,7 @@ import { IoColorPaletteOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import confetti from "canvas-confetti";
 
-const page = () => {
+const Waitlist = () => {
   const [themes, setThemes] = useState<string[]>(themesArray);
   const [currentTheme, setCurrentTheme] = useState<string>("");
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
