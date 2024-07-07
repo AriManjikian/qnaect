@@ -144,4 +144,4 @@ const Waitlist = () => {
   );
 };
 
-export default page;
+export default Waitlist;
