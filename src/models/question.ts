@@ -4,7 +4,7 @@ import { StaticImageData } from "next/image";
 
 const QuestionSchema = new Schema(
   {
-    username: {
+    email: {
       type: String,
       required: true,
     },
@@ -36,7 +36,7 @@ const Question =
 export interface QuestionType {
   _id: string;
 
-  username: string;
+  email: string;
 
   question: string;
 

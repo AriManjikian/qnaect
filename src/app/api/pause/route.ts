@@ -8,21 +8,14 @@ export async function POST(request: any) {
   try {
     await connectMongoDB();
     const session = await getServerSession(authConfig);
-    const { name, image, occupation, bio, theme, links } = await request.json();
-
+    const { paused } = await request.json();
     const updatedUser = await User.findOneAndUpdate(
       { email: session?.user?.email },
       {
-        name: name,
-        occupation: occupation,
-        bio: bio,
-        theme: theme,
-        links: links,
-        image: image,
+        paused: paused,
       },
       { new: true }
     );
-
     return NextResponse.json(
       { message: "User Updated", updatedUser: updatedUser },
       { status: 201 }

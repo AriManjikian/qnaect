@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
+import { fetchData } from "./fetchData";
 
 export const authConfig: NextAuthOptions = {
   providers: [
@@ -31,15 +32,9 @@ export const authConfig: NextAuthOptions = {
         const apiUrl = `${websiteUrl}/api/createuser`;
         console.log(apiUrl);
         try {
-          const res = await fetch(apiUrl, {
-            method: "POST",
-            headers: {
-              "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-              name,
-              email,
-            }),
+          const res = await fetchData(apiUrl, "POST", {
+            name,
+            email,
           });
         } catch (error) {
           console.log(error);

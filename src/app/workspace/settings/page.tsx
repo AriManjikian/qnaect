@@ -1,5 +1,6 @@
 "use client";
 import { LoginIsRequiredClient } from "@/lib/auth";
+import { fetchData } from "@/lib/fetchData";
 import { useUser } from "@/providers/CurrentUserProvider";
 import { signOut } from "next-auth/react";
 import React, { useEffect, useState } from "react";
@@ -13,17 +14,11 @@ const Page = () => {
 
   const handleAddUsername = async () => {
     try {
-      const response = await fetch("/api/addusername", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: username,
-        }),
+      const { responseData, ok } = await fetchData("/api/addusername", "POST", {
+        username: username,
       });
 
-      if (!response.ok) {
+      if (!ok) {
         toast.error("Username already taken, choose another one.", {
           position: "bottom-right",
           autoClose: 5000,

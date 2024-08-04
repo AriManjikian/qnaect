@@ -1,8 +1,8 @@
 "use client";
 import NewTabLink from "@/components/NewTabLink";
+import { fetchData } from "@/lib/fetchData";
 import { socialMediaPlatforms } from "@/lib/platforms";
 import { UserType } from "@/models/user";
-import { div } from "@tensorflow/tfjs";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { LuLink } from "react-icons/lu";
@@ -17,15 +17,9 @@ export default function Profile({ params }: { params: { username: string } }) {
   const handleQuestion = async () => {
     try {
       setLoadingQuestion(true);
-      const response = await fetch("/api/askquestion", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: params.username.toString(),
-          question: questionInput,
-        }),
+      const response = await fetchData("/api/askquestion", "POST", {
+        username: params.username.toString(),
+        question: questionInput,
       });
 
       setLoadingQuestion(false);
@@ -38,23 +32,20 @@ export default function Profile({ params }: { params: { username: string } }) {
   useEffect(() => {
     try {
       setLoadingData(true);
-      const fetchData = async () => {
-        const response = await fetch("/api/search/profiledata", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+      const getUserData = async () => {
+        const { responseData, ok } = await fetchData(
+          "/api/search/profiledata",
+          "POST",
+          {
             username: params.username,
-          }),
-        });
-        const responseData = await response.json();
+          }
+        );
 
         setProfileData(responseData);
         setLoadingData(false);
       };
 
-      fetchData();
+      getUserData();
     } catch (error) {
       console.log(error);
     }

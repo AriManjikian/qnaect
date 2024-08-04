@@ -17,6 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import { useUser } from "@/providers/CurrentUserProvider";
 import { socialMediaPlatforms } from "@/lib/platforms";
+import { fetchData } from "@/lib/fetchData";
 
 type UserLinkType = {
   platform: string;
@@ -69,22 +70,16 @@ const Page = () => {
   const uploadToS3 = async (file: File) => {
     try {
       // Get the signed URL from your API
-      const response = await fetch("/api/uploads3", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fileName: file.name,
-          fileType: file.type,
-        }),
+      const { responseData, ok } = await fetchData("/api/uploads3", "POST", {
+        fileName: file.name,
+        fileType: file.type,
       });
 
-      if (!response.ok) {
+      if (!ok) {
         throw new Error("Failed to get signed URL");
       }
 
-      const { signedUrl } = await response.json();
+      const { signedUrl } = responseData;
 
       // Upload to S3 using the signed URL
       const uploadResponse = await fetch(signedUrl, {
@@ -157,26 +152,18 @@ const Page = () => {
     });
 
     try {
-      const response = await fetch("/api/updateuser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: name,
-          occupation: occupation,
-          bio: bioMarkdown,
-          links: userLinks,
-          image: image,
-          theme: selectedTheme,
-        }),
+      const { responseData, ok } = await fetchData("/api/updateuser", "POST", {
+        name: name,
+        occupation: occupation,
+        bio: bioMarkdown,
+        links: userLinks,
+        image: image,
+        theme: selectedTheme,
       });
-
-      if (!response.ok) {
+      console.log(ok, responseData);
+      if (!ok) {
         throw new Error("Failed to save changes!");
       }
-
-      const responseData = await response.json();
 
       toast.update(toastId, {
         render: "Changes saved successfully!",
@@ -214,18 +201,16 @@ const Page = () => {
   useEffect(() => {
     const addUsername = async (fetchedUsername: string) => {
       try {
-        const response = await fetch("/api/addusername", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username: fetchedUsername }),
-        });
+        const { responseData, ok } = await fetchData(
+          "/api/addusername",
+          "POST",
+          {
+            username: fetchedUsername,
+          }
+        );
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          toast.error(`${data.message}`, {
+        if (!ok) {
+          toast.error(`${responseData.message}`, {
             position: "bottom-right",
             autoClose: 5000,
           });

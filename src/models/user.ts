@@ -34,6 +34,11 @@ const userSchema = new Schema(
       required: true,
       unique: true,
     },
+    paused: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     username: {
       type: String,
       unique: true,
@@ -68,6 +73,7 @@ export interface UserType {
   bio: string;
   email: string;
   theme: string;
+  paused: boolean;
   username: string;
   links: { [key: string]: UserLinkType };
   image: string;

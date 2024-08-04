@@ -1,55 +1,29 @@
 "use client";
-import { LoginIsRequiredClient } from "@/lib/auth";
-import { QuestionType } from "@/models/question";
-import { useUser } from "@/providers/CurrentUserProvider";
-import { kmeans } from "ml-kmeans";
-import { CgEditUnmask } from "react-icons/cg";
-import { KMeansResult } from "ml-kmeans/lib/KMeansResult";
 
 import React, { useEffect, useState } from "react";
-import { div } from "@tensorflow/tfjs";
-import QuestionTile from "@/components/QuestionTile";
+import { LoginIsRequiredClient } from "@/lib/auth";
+import { QuestionType } from "@/models/question";
+import { UserType } from "@/models/user";
+import { useUser } from "@/providers/CurrentUserProvider";
+import {
+  BiCollection,
+  BiLeftArrow,
+  BiPause,
+  BiPlay,
+  BiRightArrow,
+} from "react-icons/bi";
+import { IoIosMore } from "react-icons/io";
+import { fetchData } from "@/lib/fetchData";
+import { TiRefresh } from "react-icons/ti";
+import { generateGroups } from "@/lib/groupQuestions";
+import { MdOutlineLibraryAdd } from "react-icons/md";
+import { BsEyeSlash } from "react-icons/bs";
+import { LoadingStates } from "@/lib/types";
+import { LoadingButton } from "@/components/LoadingButton";
+import { CiViewTable } from "react-icons/ci";
+import QuestionTable from "@/components/QuestionTable";
 
-// Calculate the WCSS for different numbers of clusters
-const calculateWCSS = (data: number[][], k: number): number => {
-  const kmeansResult: KMeansResult = kmeans(data, k, {
-    initialization: "kmeans++",
-  });
-  let wcss: number = 0;
-  for (let i = 0; i < k; i++) {
-    const clusterPoints: number[][] = data.filter(
-      (_, idx) => kmeansResult.clusters[idx] === i
-    );
-    const centroid: number[] = kmeansResult.centroids[i];
-    const distances: number[] = clusterPoints.map((point) =>
-      Math.sqrt(
-        point.reduce((sum, val, j) => sum + Math.pow(val - centroid[j], 2), 0)
-      )
-    );
-    wcss += distances.reduce((sum, val) => sum + val, 0);
-  }
-  return wcss;
-};
-
-// Determine the elbow point
-const calculateElbowPoint = (wcssValues: number[]): number => {
-  const diffs: number[] = [];
-  for (let i = 1; i < wcssValues.length; i++) {
-    diffs.push(wcssValues[i - 1] - wcssValues[i]);
-  }
-  let maxDiff: number = 0;
-  let elbowPoint: number = 1;
-  for (let i = 1; i < diffs.length; i++) {
-    const diffChange: number = diffs[i - 1] - diffs[i];
-    if (diffChange > maxDiff) {
-      maxDiff = diffChange;
-      elbowPoint = i + 1;
-    }
-  }
-  return elbowPoint;
-};
-
-// Group questions by cluster
+// Types
 type GroupType = {
   group: string;
   questions: QuestionType[];
@@ -63,186 +37,319 @@ export default function Workspace() {
   const [username, setUsername] = useState<string | undefined>("");
   const [questionList, setQuestionList] = useState<QuestionType[]>([]);
   const [kmeansGroups, setKmeansGroups] = useState<GroupType[]>([]);
-  const [groupCount, setGroupCount] = useState<number>(10);
+  const [profileData, setProfileData] = useState<UserType | null>(null);
+  const [questionsGrouped, setQuestionsGrouped] = useState<boolean>(false);
+  const [selectedTab, setSelectedTab] = useState<"Questions" | "Statistics">(
+    "Questions"
+  );
 
-  const [rangeValue, setRangeValue] = useState(2);
+  const [loadingStates, setLoadingStates] = useState<LoadingStates>({
+    questions: false,
+    pause: false,
+    groups: false,
+  });
 
-  const handleRangeChange = (event: any) => {
-    let value = event.target.value;
-    if (value > questionList.length) {
-      value = questionList.length;
-    }
-
-    setRangeValue(value);
-  };
-
-  const generateGroups = async () => {
-    try {
-      // Extract embeddings from questions
-      const embeddingsArr: number[][] = questionList.map((q) => q.embedding);
-      console.log(groupCount);
-      if (groupCount === 0 || groupCount > embeddingsArr.length) {
-        console.log("Calculating optimal cluster count...");
-        // Determine optimal number of clusters
-        const maxClusters: number = Math.min(10, embeddingsArr.length);
-        const wcssValues: number[] = [];
-        for (let k = 1; k <= maxClusters; k++) {
-          const wcss: number = calculateWCSS(embeddingsArr, k);
-          wcssValues.push(wcss);
-        }
-        const optimalClusters: number = await calculateElbowPoint(wcssValues);
-        console.log(optimalClusters);
-        await setGroupCount(optimalClusters);
-      }
-
-      console.log("Cluster count is", groupCount);
-
-      // Perform K-means clustering
-      const kmeansResult: KMeansResult = kmeans(embeddingsArr, groupCount, {
-        initialization: "kmeans++",
-      });
-
-      const groups: GroupType[] = Array.from(
-        { length: groupCount },
-        (_, i) => ({
-          group: `group ${i + 1}`,
-          questions: [],
-        })
-      );
-
-      questionList.forEach((question, index) => {
-        const cluster: number = kmeansResult.clusters[index];
-        groups[cluster].questions.push(question);
-      });
-
-      setKmeansGroups(groups);
-      console.log(groups);
-    } catch (error) {}
+  const setLoading = (key: keyof LoadingStates, value: boolean) => {
+    setLoadingStates((prev) => ({ ...prev, [key]: value }));
   };
 
   const getQuestionList = async () => {
     try {
-      const response = await fetch("/api/search/questionlist", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: currentUser?.username,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch question list");
-      }
-
-      const responseData = await response.json();
+      setLoading("questions", true);
+      const { responseData, ok } = await fetchData(
+        "/api/search/questionlist",
+        "POST",
+        {
+          email: currentUser?.email,
+        }
+      );
       setQuestionList(responseData.questionList);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching question list:", error);
+    } finally {
+      setLoading("questions", false);
     }
   };
 
-  useEffect(() => {
+  const handlePause = async () => {
     try {
-      const addUsername = async (fetchedUsername: string) => {
-        try {
-          const response = await fetch("/api/addusername", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username: fetchedUsername }),
-          });
-          const data = await response.json();
-          console.log("Username added:", data);
-        } catch (error) {
-          console.error("Error adding username:", error);
-        }
-      };
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const fetchedUsername = urlParams.get("username");
-      if (fetchedUsername) {
-        setUsername(fetchedUsername);
-        addUsername(fetchedUsername);
-      }
-
-      if (currentUser) {
-        getQuestionList();
-      }
+      setLoading("pause", true);
+      const { responseData, ok } = await fetchData("/api/pause", "POST", {
+        paused: !profileData?.paused,
+      });
+      setProfileData(responseData.updatedUser);
     } catch (error) {
-      console.log(error);
+      console.error("Error toggling pause:", error);
+    } finally {
+      setLoading("pause", false);
     }
+  };
+
+  const handleGroupQuestions = async () => {
+    try {
+      setLoading("groups", true);
+      const groups = await generateGroups(questionList);
+      setKmeansGroups(groups);
+      console.log(groups);
+      setLoading("groups", false);
+    } catch (error) {
+      console.error("Error grouping questions:", error);
+    } finally {
+      setLoading("groups", false);
+    }
+  };
+
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(questionList.length / itemsPerPage);
+
+  const handlePrevious = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
+  const handleNext = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
+
+  const currentItems = questionList.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, questionList.length);
+
+  useEffect(() => {
+    const addUsername = async (fetchedUsername: string) => {
+      try {
+        await fetchData("/api/addusername", "POST", {
+          username: fetchedUsername,
+        });
+        console.log("Username added successfully");
+      } catch (error) {
+        console.error("Error adding username:", error);
+      }
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const fetchedUsername = urlParams.get("username");
+    if (fetchedUsername) {
+      setUsername(fetchedUsername);
+      addUsername(fetchedUsername);
+    }
+
+    if (currentUser) {
+      getQuestionList();
+    }
+
+    setProfileData(currentUser);
   }, [currentUser]);
 
   return (
-    <>
-      <section className="flex w-full h-full">
-        <section className="h-full w-full p-6">
-          <span className="flex gap-2">
-            <div className="badge badge-primary my-4 p-4">All Questions</div>
-            <div className="badge badge-neutral my-4 p-4">Similar Groups</div>
-          </span>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {questionList.map((questionData, key) => {
-              return <QuestionTile questionData={questionData} key={key} />;
-            })}
+    <section className="flex flex-col w-full h-full p-6">
+      {/* Tab selection for mobile */}
+      <span className="flex gap-2 md:hidden">
+        {["Questions", "Statistics"].map((tab) => (
+          <div
+            key={tab}
+            className={`badge my-4 p-4 ${
+              selectedTab === tab ? "badge-primary" : "badge-neutral"
+            }`}
+            onClick={() => setSelectedTab(tab as "Questions" | "Statistics")}
+          >
+            {tab}
           </div>
-        </section>
+        ))}
+      </span>
 
-        <div className="bg-base-200 w-96 h-full hidden md:block p-4 pt-20">
-          <div className="flex flex-col gap-2">
-            <p className="text-md font-bold flex items-center gap-2">
-              <CgEditUnmask className="text-xl" />
-              Advanced Customization
-            </p>
-            <label className="form-control">
-              <div className="label">
-                <span className="label-text">Grouping Algorithm</span>
-              </div>
-              <select className="select select-bordered w-full input-nofocus">
-                <option>K-Means</option>
-                <option>DBSCAN</option>
-                <option>GMM</option>
-                <option>HAC</option>
-              </select>
-            </label>
-            <label className="form-control">
-              <div className="label">
-                <span className="label-text">Distance Metric</span>
-              </div>
-              <select className="select select-bordered w-full input-nofocus">
-                <option>Euclidian</option>
-                <option>Cosine</option>
-                <option>Manhattan</option>
-                <option>Correlation</option>
-              </select>
-            </label>
-            <label className="form-control">
-              <div className="label">
-                <span className="label-text">Group Count</span>
-              </div>
-              <div className="flex items-center justify-center gap-5">
-                <input
-                  type="range"
-                  min={0}
-                  max={questionList?.length}
-                  value={rangeValue}
-                  onChange={(e) => handleRangeChange(e)}
-                  className="range range-xs"
-                />
-                <input
-                  type="text"
-                  className="input input-bordered size-12 input-nofocus text-xs p-0 text-center"
-                  value={rangeValue}
-                  onChange={(e) => handleRangeChange(e)}
-                />
-              </div>
-            </label>
+      {/* Statistics section */}
+      <span
+        className={`grid gap-4 min-w-full w-full h-fit sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 ${
+          selectedTab !== "Statistics" ? "hidden sm:grid" : ""
+        }`}
+      >
+        <div className="stats shadow-md">
+          <div className="stat">
+            <div className="stat-title">Total Page Views</div>
+            <div className="stat-value">89,400</div>
+            <div className="stat-desc">21% more than last month</div>
           </div>
         </div>
+        <div className="stats shadow-md">
+          <div className="stat">
+            <div className="stat-title">Total Page Views</div>
+            <div className="stat-value">89,400</div>
+            <div className="stat-desc">21% more than last month</div>
+          </div>
+        </div>
+        <div className="stats shadow-md">
+          <div className="stat">
+            <div className="stat-title">Total Page Views</div>
+            <div className="stat-value">89,400</div>
+            <div className="stat-desc">21% more than last month</div>
+          </div>
+        </div>
+        <div className="stats shadow-md">
+          <div className="stat">
+            <div className="stat-title">Total Page Views</div>
+            <div className="stat-value">89,400</div>
+            <div className="stat-desc">21% more than last month</div>
+          </div>
+        </div>
+      </span>
+
+      {/* Questions section */}
+      <section
+        className={`relative shadow-md w-full h-full rounded-lg p-6 ${
+          selectedTab !== "Questions" ? "hidden sm:block" : ""
+        }`}
+      >
+        <span className="flex justify-between items-center">
+          <h1 className="font-bold text-lg">Recent Questions</h1>
+          <div className="gap-2 hidden md:flex">
+            <LoadingButton
+              onClick={handlePause}
+              loadingKey="pause"
+              loadingStates={loadingStates}
+            >
+              {profileData?.paused ? (
+                <p className="text-success flex items-center">
+                  Accept Questions <BiPlay className="text-xl" />
+                </p>
+              ) : (
+                <p className="text-error flex items-center">
+                  Pause Questions <BiPause className="text-xl text-error" />
+                </p>
+              )}
+            </LoadingButton>
+            <LoadingButton
+              onClick={() => {
+                setQuestionsGrouped(!questionsGrouped);
+                handleGroupQuestions();
+              }}
+              loadingKey="groups"
+              loadingStates={loadingStates}
+            >
+              {questionsGrouped ? (
+                <p className="flex gap-2 items-center">
+                  All Questions <CiViewTable className="text-xl" />
+                </p>
+              ) : (
+                <p className="flex gap-2 items-center">
+                  Group Similar <BiCollection className="text-xl" />
+                </p>
+              )}
+            </LoadingButton>
+          </div>
+          {/* Mobile dropdown menu */}
+          <details className="dropdown dropdown-end md:hidden">
+            <summary className="btn btn-ghost">
+              <IoIosMore />
+            </summary>
+            <ul className="menu dropdown-content bg-base-200 rounded-box z-[1] w-52 p-2 shadow">
+              <li>
+                <LoadingButton
+                  onClick={handlePause}
+                  loadingKey="pause"
+                  loadingStates={loadingStates}
+                >
+                  {profileData?.paused ? (
+                    <p className="text-success flex items-center">
+                      Accept Questions <BiPlay className="text-xl" />
+                    </p>
+                  ) : (
+                    <p className="text-error flex items-center">
+                      Pause Questions <BiPause className="text-xl text-error" />
+                    </p>
+                  )}
+                </LoadingButton>
+              </li>
+              <li>
+                <LoadingButton
+                  onClick={() => {
+                    setQuestionsGrouped(!questionsGrouped);
+                    handleGroupQuestions();
+                  }}
+                  loadingKey="groups"
+                  loadingStates={loadingStates}
+                >
+                  {questionsGrouped ? (
+                    <p className="flex gap-2 items-center">
+                      All Questions <CiViewTable className="text-xl" />
+                    </p>
+                  ) : (
+                    <p className="flex gap-2 items-center">
+                      Group Similar <BiCollection className="text-xl" />
+                    </p>
+                  )}
+                </LoadingButton>
+              </li>
+            </ul>
+          </details>
+        </span>
+        <div className="divider w-full"></div>
+        {questionsGrouped ? (
+          <button className="btn btn-neutral" onClick={handleGroupQuestions}>
+            New Groups
+            <MdOutlineLibraryAdd className="text-2xl" />
+          </button>
+        ) : (
+          <button className="btn btn-neutral" onClick={getQuestionList}>
+            Refresh
+            <TiRefresh className="text-2xl" />
+          </button>
+        )}
+
+        {loadingStates.questions ? (
+          <div className="flex flex-col h-full w-full items-center justify-center">
+            <div className="loading loading-spinner loading-lg"></div>
+          </div>
+        ) : questionList.length === 0 ? (
+          <div className="flex flex-col h-full w-full items-center justify-center text-center">
+            <h1 className="text-2xl font-bold">No Questions Yet!</h1>
+            <p className="text-xl font-medium">
+              Share your personal page with your audience
+            </p>
+          </div>
+        ) : questionsGrouped ? (
+          <div className="flex flex-col gap-2 overflow-x-auto pt-4 mb-14">
+            {kmeansGroups.map((group, index) => (
+              <div key={index} className="collapse bg-base-200">
+                <input type="checkbox" />
+                <div className="collapse-title text-xl font-medium">
+                  Group {index + 1}
+                </div>
+                <div className="collapse-content">
+                  <QuestionTable questions={group.questions} />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <QuestionTable questions={currentItems} />
+        )}
+
+        {!questionsGrouped && (
+          <div className="flex items-center absolute bottom-0 gap-2 p-4 text-sm font-bold">
+            <span>
+              Showing {startItem}-{endItem} of {questionList.length} questions
+            </span>
+            <button
+              className="btn btn-ghost"
+              onClick={handlePrevious}
+              disabled={currentPage === 1}
+            >
+              <BiLeftArrow />
+            </button>
+            <button
+              className="btn btn-ghost"
+              onClick={handleNext}
+              disabled={currentPage === totalPages}
+            >
+              <BiRightArrow />
+            </button>
+          </div>
+        )}
       </section>
-    </>
+    </section>
   );
 }

@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: any }) {
   const currentPath = usePathname();
 
   return (
-    <section data-theme="dark" className="h-dvh">
+    <section data-theme="" className="h-dvh">
       <WorkspaceNav currentPath={currentPath} />
       <div className="drawer md:drawer-open h-full w-full">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />

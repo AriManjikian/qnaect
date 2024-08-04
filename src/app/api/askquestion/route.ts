@@ -7,11 +7,20 @@ import "@tensorflow/tfjs-backend-webgl";
 import * as use from "@tensorflow-models/universal-sentence-encoder";
 import * as tf from "@tensorflow/tfjs-core";
 import Question from "@/models/question";
+import User from "@/models/user";
 
 export async function POST(request: any) {
   try {
     await connectMongoDB();
     const { username, question } = await request.json();
+    const responder = await User.findOne({ username: username });
+    if (responder.paused) {
+      return NextResponse.json(
+        { message: "Questions Paused" },
+        { status: 200 }
+      );
+    }
+    const responderEmail = responder.email;
     // Load model
     const model = await use.load();
 
@@ -20,9 +29,9 @@ export async function POST(request: any) {
     const embedding: number[] = embedData.arraySync()[0];
 
     await Question.create({
-      username,
-      question,
-      embedding,
+      email: responderEmail,
+      question: question,
+      embedding: embedding,
     });
 
     return NextResponse.json({ message: "Question created" }, { status: 200 });

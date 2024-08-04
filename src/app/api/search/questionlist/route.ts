@@ -4,10 +4,10 @@ import Question, { QuestionType } from "@/models/question";
 
 export async function POST(request: Request) {
   try {
-    const { username }: { username: string } = await request.json();
+    const { email }: { email: string } = await request.json();
     await connectMongoDB();
     const questionList: QuestionType[] = await Question.find({
-      username: username,
+      email: email,
     });
 
     return NextResponse.json({ questionList }, { status: 200 });

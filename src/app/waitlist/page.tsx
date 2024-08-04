@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { IoColorPaletteOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import confetti from "canvas-confetti";
+import { fetchData } from "@/lib/fetchData";
 
 const Waitlist = () => {
   const [themes, setThemes] = useState<string[]>(themesArray);
@@ -44,18 +45,12 @@ const Waitlist = () => {
 
       setSubmitLoading(true);
 
-      const response = await fetch("/api/waitlist", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: emailInput,
-          name: nameInput,
-        }),
+      const response = await fetchData("/api/waitlist", "POST", {
+        email: emailInput,
+        name: nameInput,
       });
 
-      if (!response.ok) {
+      if (!ok) {
         toast.error("Sorry, something bad happened.", {
           position: "bottom-right",
           autoClose: 5000,
