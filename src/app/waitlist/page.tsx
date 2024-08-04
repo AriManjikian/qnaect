@@ -45,7 +45,7 @@ const Waitlist = () => {
 
       setSubmitLoading(true);
 
-      const response = await fetchData("/api/waitlist", "POST", {
+      const { responseData, ok } = await fetchData("/api/waitlist", "POST", {
         email: emailInput,
         name: nameInput,
       });
