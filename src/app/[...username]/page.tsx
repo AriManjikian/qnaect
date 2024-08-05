@@ -1,7 +1,9 @@
 "use client";
 import NewTabLink from "@/components/NewTabLink";
+import QuestionTable from "@/components/QuestionTable";
 import { fetchData } from "@/lib/fetchData";
 import { socialMediaPlatforms } from "@/lib/platforms";
+import { QuestionType } from "@/models/question";
 import { UserType } from "@/models/user";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -10,6 +12,7 @@ import ReactMarkdown from "react-markdown";
 
 export default function Profile({ params }: { params: { username: string } }) {
   const [profileData, setProfileData] = useState<UserType | null>(null);
+  const [questionList, setQuestionList] = useState<QuestionType[]>([]);
   const [loadingData, setLoadingData] = useState<boolean>(false);
   const [questionInput, setQuestionInput] = useState<string>("");
   const [loadingQuestion, setLoadingQuestion] = useState<boolean>(false);
@@ -17,7 +20,7 @@ export default function Profile({ params }: { params: { username: string } }) {
   const handleQuestion = async () => {
     try {
       setLoadingQuestion(true);
-      const response = await fetchData("/api/askquestion", "POST", {
+      const { responseData, ok } = await fetchData("/api/askquestion", "POST", {
         username: params.username.toString(),
         question: questionInput,
       });
@@ -29,55 +32,53 @@ export default function Profile({ params }: { params: { username: string } }) {
     }
   };
 
-  useEffect(() => {
+  const getProfileData = async () => {
     try {
       setLoadingData(true);
-      const getUserData = async () => {
-        const { responseData, ok } = await fetchData(
-          "/api/search/profiledata",
-          "POST",
-          {
-            username: params.username,
-          }
-        );
+      const { responseData: profileData, ok: profileOk } = await fetchData(
+        "/api/search/profiledata",
+        "POST",
+        { username: params.username }
+      );
 
-        setProfileData(responseData);
-        setLoadingData(false);
-      };
-
-      getUserData();
+      setProfileData(profileData);
+      setLoadingData(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      setLoadingData(false);
     }
-  }, []);
+  };
 
-  if (loadingData) {
-    return (
-      <section className="flex flex-col md:flex-row">
-        <div className="p-6 min-h-dvh w-full md:w-fit max-w-sm md:bg-base-200">
-          <div className="md:bg-base-100 md:p-5 md:rounded-lg">
-            <div className="flex w-52 flex-col gap-4">
-              <div className="flex items-center gap-4">
-                <div className="skeleton h-16 w-16 shrink-0 rounded-full"></div>
-                <div className="flex flex-col gap-4">
-                  <div className="skeleton h-4 w-20"></div>
-                  <div className="skeleton h-4 w-28"></div>
-                </div>
-              </div>
-              <div className="skeleton h-32 w-full"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const getQuestionList = async () => {
+    try {
+      const { responseData, ok } = await fetchData(
+        "api/search/answeredlist",
+        "POST",
+        {
+          username: params.username,
+        }
+      );
+
+      if (ok) {
+        setQuestionList(responseData.questionList);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoadingData(false);
+    }
+  };
+
+  useEffect(() => {
+    getProfileData();
+    getQuestionList();
+  }, [params.username]);
 
   return (
     <section
       className="flex flex-col md:flex-row"
       data-theme={profileData?.theme}
     >
-      <div className="p-6 min-h-dvh w-full md:w-fit md:max-w-sm md:bg-base-200">
+      <div className="p-6 max-h-screen w-full md:w-fit md:max-w-sm md:bg-base-100">
         {profileData && (
           <>
             <span className="flex gap-4 items-start">
@@ -139,6 +140,18 @@ export default function Profile({ params }: { params: { username: string } }) {
 
             <div className="divider m-0"></div>
 
+            <div
+              role="tablist"
+              className="tabs tabs-boxed md:hidden flex flex-row"
+            >
+              <a role="tab" className="tab w-full">
+                Ask Question
+              </a>
+              <a role="tab" className="tab w-full tab-active">
+                View Answers
+              </a>
+            </div>
+
             <div className="relative">
               <textarea
                 className="textarea textarea-bordered rounded-lg input-nofocus w-full mt-4 bg-base-200 placeholder:text-base-content min-h-24"
@@ -161,6 +174,19 @@ export default function Profile({ params }: { params: { username: string } }) {
           </>
         )}
       </div>
+      <section className="h-screen overflow-y-auto w-full p-4 bg-base-200">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 justify-items-center">
+          {questionList.map((questionData, key) => (
+            <div
+              key={key}
+              className="bg-base-100 w-full p-4 rounded-lg shadow-md flex flex-col gap-4"
+            >
+              <p className="text-lg font-semibold">{questionData.question}</p>
+              <p className="text-base">{questionData.answer}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </section>
   );
 }
