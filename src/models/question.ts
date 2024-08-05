@@ -17,6 +17,10 @@ const QuestionSchema = new Schema(
       default: undefined,
       required: false,
     },
+    keywords: {
+      type: [String],
+      default: [],
+    },
     answeredAt: {
       type: Date,
     },
@@ -41,6 +45,8 @@ export interface QuestionType {
   question: string;
 
   answer: string | undefined;
+
+  keywords: string[];
 
   createdAt: Date;
 

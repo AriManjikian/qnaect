@@ -82,7 +82,7 @@ export default function Profile({ params }: { params: { username: string } }) {
           <>
             <span className="flex gap-4 items-start">
               <div className="avatar rounded-full">
-                <div className="size-12 md:size-20 rounded-full">
+                <div className="size-20 md:size-20 rounded-full">
                   {profileData.image && (
                     <Image
                       src={profileData.image}

@@ -1,23 +1,57 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { QuestionType } from "@/models/question";
 import { IoIosMore } from "react-icons/io";
 import { BsEyeSlash } from "react-icons/bs";
+import { fetchData } from "@/lib/fetchData";
+import { toast } from "react-toastify";
 
 type QuestionTableProps = {
   questions: QuestionType[];
+  getQuestionList: () => Promise<void>;
 };
 
 type ModalProps = {
   show: boolean;
   currentQuestion: QuestionType | null;
   onClose: () => void;
+  onSubmit: () => void;
 };
 
-const Modal: React.FC<ModalProps> = ({ show, onClose, currentQuestion }) => {
-  const [answer, setAnswer] = useState("");
+const Modal: React.FC<ModalProps> = ({
+  show,
+  currentQuestion,
+  onClose,
+  onSubmit,
+}) => {
+  const [answer, setAnswer] = useState(currentQuestion?.answer || "");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    setAnswer(currentQuestion?.answer || "");
+  }, [currentQuestion]);
   if (!show || !currentQuestion) return null;
+
+  const handleAnswerSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      const { responseData, ok } = await fetchData("/api/answer", "POST", {
+        answer: answer,
+        questionId: currentQuestion._id,
+      });
+      if (ok) {
+        setAnswer("");
+        onSubmit();
+        onClose();
+      } else {
+        console.error("Failed to submit answer:", responseData);
+      }
+    } catch (error) {
+      console.error("Error submitting answer:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -28,21 +62,22 @@ const Modal: React.FC<ModalProps> = ({ show, onClose, currentQuestion }) => {
           placeholder="Type your answer here..."
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
+          disabled={isSubmitting}
         />
         <div className="flex justify-end gap-2">
-          <button className="btn btn-error" onClick={onClose}>
+          <button
+            className="btn btn-error"
+            onClick={onClose}
+            disabled={isSubmitting}
+          >
             Cancel
           </button>
           <button
             className="btn btn-primary"
-            onClick={() => {
-              // Here you would typically handle the answer submission
-              console.log(`Submitting answer: ${answer}`);
-              setAnswer("");
-              onClose();
-            }}
+            onClick={handleAnswerSubmit}
+            disabled={isSubmitting}
           >
-            Submit
+            {isSubmitting ? "Submitting..." : "Submit"}
           </button>
         </div>
       </div>
@@ -50,7 +85,10 @@ const Modal: React.FC<ModalProps> = ({ show, onClose, currentQuestion }) => {
   );
 };
 
-const QuestionTable: React.FC<QuestionTableProps> = ({ questions }) => {
+const QuestionTable: React.FC<QuestionTableProps> = ({
+  questions,
+  getQuestionList,
+}) => {
   const [showModal, setShowModal] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<QuestionType | null>(
     null
@@ -59,6 +97,25 @@ const QuestionTable: React.FC<QuestionTableProps> = ({ questions }) => {
   const handleAnswerClick = (question: QuestionType) => {
     setCurrentQuestion(question);
     setShowModal(true);
+  };
+
+  const handleHideQuestion = async (questionId: string) => {
+    try {
+      const { responseData, ok } = await fetchData("api/hidequestion", "POST", {
+        questionId: questionId,
+      });
+
+      if (!ok) {
+        toast.error("Sorry, something bad happened. Try again later.", {
+          position: "bottom-right",
+          autoClose: 5000,
+        });
+        return;
+      }
+      getQuestionList();
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   return (
@@ -78,11 +135,13 @@ const QuestionTable: React.FC<QuestionTableProps> = ({ questions }) => {
                 <td>{questionData.question}</td>
                 <td>
                   <span className="flex gap-2">
-                    {["neutral", "neutral", "neutral"].map((tag, i) => (
-                      <div key={i} className="badge badge-neutral">
-                        {tag}
-                      </div>
-                    ))}
+                    {questionData.keywords.map((keyword, i) => {
+                      return (
+                        <div key={i} className="badge badge-neutral">
+                          {keyword}
+                        </div>
+                      );
+                    })}
                   </span>
                 </td>
                 <td className="flex justify-between">
@@ -100,7 +159,10 @@ const QuestionTable: React.FC<QuestionTableProps> = ({ questions }) => {
                     </summary>
                     <ul className="menu dropdown-content bg-base-200 rounded-box z-[1] w-52 p-2 shadow">
                       <li>
-                        <button className="btn btn-ghost">
+                        <button
+                          className="btn btn-ghost"
+                          onClick={() => handleHideQuestion(questionData._id)}
+                        >
                           Hide Question <BsEyeSlash className="text-xl" />
                         </button>
                       </li>
@@ -115,6 +177,9 @@ const QuestionTable: React.FC<QuestionTableProps> = ({ questions }) => {
       <Modal
         show={showModal}
         currentQuestion={currentQuestion}
+        onSubmit={() => {
+          getQuestionList();
+        }}
         onClose={() => {
           setShowModal(false);
           setCurrentQuestion(null);

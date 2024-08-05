@@ -14,20 +14,14 @@ import {
 } from "react-icons/bi";
 import { IoIosMore } from "react-icons/io";
 import { fetchData } from "@/lib/fetchData";
-import { TiRefresh } from "react-icons/ti";
 import { generateGroups } from "@/lib/groupQuestions";
 import { MdOutlineLibraryAdd } from "react-icons/md";
-import { BsEyeSlash } from "react-icons/bs";
-import { LoadingStates } from "@/lib/types";
-import { LoadingButton } from "@/components/LoadingButton";
 import { CiViewTable } from "react-icons/ci";
+import { TiRefresh } from "react-icons/ti";
 import QuestionTable from "@/components/QuestionTable";
-
-// Types
-type GroupType = {
-  group: string;
-  questions: QuestionType[];
-};
+import dayjs from "dayjs";
+import { GroupType, LoadingStates, Stats } from "@/lib/types";
+import { LoadingButton } from "@/components/LoadingButton";
 
 export default function Workspace() {
   LoginIsRequiredClient();
@@ -42,6 +36,16 @@ export default function Workspace() {
   const [selectedTab, setSelectedTab] = useState<"Questions" | "Statistics">(
     "Questions"
   );
+  const [answeredStats, setAnsweredStats] = useState<Stats>({
+    count: 0,
+    percentage: 0,
+    isIncrease: true,
+  });
+  const [receivedStats, setReceivedStats] = useState<Stats>({
+    count: 0,
+    percentage: 0,
+    isIncrease: true,
+  });
 
   const [loadingStates, setLoadingStates] = useState<LoadingStates>({
     questions: false,
@@ -63,12 +67,76 @@ export default function Workspace() {
           email: currentUser?.email,
         }
       );
-      setQuestionList(responseData.questionList);
+      if (ok) {
+        setQuestionList(responseData.questionList);
+        calculateStats(responseData.questionList);
+      }
     } catch (error) {
       console.error("Error fetching question list:", error);
     } finally {
       setLoading("questions", false);
     }
+  };
+
+  const calculateStats = (questions: QuestionType[]) => {
+    const now = dayjs();
+    const startOfLast30Days = now.subtract(30, "days");
+    const startOfPrevious30Days = now.subtract(60, "days").startOf("day");
+    const endOfPrevious30Days = now.subtract(30, "days").endOf("day");
+
+    const receivedLast30Days = questions.filter((question) =>
+      dayjs(question.createdAt).isAfter(startOfLast30Days)
+    );
+
+    const receivedPrevious30Days = questions.filter(
+      (question) =>
+        dayjs(question.createdAt).isAfter(startOfPrevious30Days) &&
+        dayjs(question.createdAt).isBefore(endOfPrevious30Days)
+    );
+
+    const answeredLast30Days = receivedLast30Days.filter(
+      (question) => question.answer
+    );
+
+    const answeredPrevious30Days = receivedPrevious30Days.filter(
+      (question) => question.answer
+    );
+
+    const calculatePercentageIncrease = (
+      current: number,
+      previous: number
+    ): { percentage: number; isIncrease: boolean } => {
+      if (previous === 0) {
+        return {
+          percentage: 100,
+          isIncrease: true,
+        };
+      }
+      const percentage = ((current - previous) / previous) * 100;
+      return {
+        percentage: Math.abs(percentage),
+        isIncrease: percentage >= 0,
+      };
+    };
+
+    const receivedStats = {
+      count: receivedLast30Days.length,
+      ...calculatePercentageIncrease(
+        receivedLast30Days.length,
+        receivedPrevious30Days.length
+      ),
+    };
+
+    const answeredStats = {
+      count: answeredLast30Days.length,
+      ...calculatePercentageIncrease(
+        answeredLast30Days.length,
+        answeredPrevious30Days.length
+      ),
+    };
+
+    setReceivedStats(receivedStats);
+    setAnsweredStats(answeredStats);
   };
 
   const handlePause = async () => {
@@ -77,7 +145,7 @@ export default function Workspace() {
       const { responseData, ok } = await fetchData("/api/pause", "POST", {
         paused: !profileData?.paused,
       });
-      setProfileData(responseData.updatedUser);
+      if (ok) setProfileData(responseData.updatedUser);
     } catch (error) {
       console.error("Error toggling pause:", error);
     } finally {
@@ -91,7 +159,6 @@ export default function Workspace() {
       const groups = await generateGroups(questionList);
       setKmeansGroups(groups);
       console.log(groups);
-      setLoading("groups", false);
     } catch (error) {
       console.error("Error grouping questions:", error);
     } finally {
@@ -169,34 +236,33 @@ export default function Workspace() {
       >
         <div className="stats shadow-md">
           <div className="stat">
-            <div className="stat-title">Total Page Views</div>
-            <div className="stat-value">89,400</div>
-            <div className="stat-desc">21% more than last month</div>
+            <div className="stat-title">Questions Received Last 30 Days</div>
+            <div className="stat-value">{receivedStats.count}</div>
+            <div
+              className={`stat-desc ${
+                receivedStats.isIncrease ? "text-success" : "text-error"
+              }`}
+            >
+              {receivedStats.percentage.toFixed(2)}%{" "}
+              {receivedStats.isIncrease ? "more" : "less"} than last 30 days
+            </div>
           </div>
         </div>
         <div className="stats shadow-md">
           <div className="stat">
-            <div className="stat-title">Total Page Views</div>
-            <div className="stat-value">89,400</div>
-            <div className="stat-desc">21% more than last month</div>
-          </div>
-        </div>
-        <div className="stats shadow-md">
-          <div className="stat">
-            <div className="stat-title">Total Page Views</div>
-            <div className="stat-value">89,400</div>
-            <div className="stat-desc">21% more than last month</div>
-          </div>
-        </div>
-        <div className="stats shadow-md">
-          <div className="stat">
-            <div className="stat-title">Total Page Views</div>
-            <div className="stat-value">89,400</div>
-            <div className="stat-desc">21% more than last month</div>
+            <div className="stat-title">Questions Answered Last 30 Days</div>
+            <div className="stat-value">{answeredStats.count}</div>
+            <div
+              className={`stat-desc ${
+                answeredStats.isIncrease ? "text-success" : "text-error"
+              }`}
+            >
+              {answeredStats.percentage.toFixed(2)}%{" "}
+              {answeredStats.isIncrease ? "more" : "less"} than last 30 days
+            </div>
           </div>
         </div>
       </span>
-
       {/* Questions section */}
       <section
         className={`relative shadow-md w-full h-full rounded-lg p-6 ${
@@ -319,13 +385,19 @@ export default function Workspace() {
                   Group {index + 1}
                 </div>
                 <div className="collapse-content">
-                  <QuestionTable questions={group.questions} />
+                  <QuestionTable
+                    questions={group.questions}
+                    getQuestionList={getQuestionList}
+                  />
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <QuestionTable questions={currentItems} />
+          <QuestionTable
+            questions={currentItems}
+            getQuestionList={getQuestionList}
+          />
         )}
 
         {!questionsGrouped && (

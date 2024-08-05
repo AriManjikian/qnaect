@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     await connectMongoDB();
     const questionList: QuestionType[] = await Question.find({
       email: email,
-    });
+    }).sort({ createdAt: -1 });
 
     return NextResponse.json({ questionList }, { status: 200 });
   } catch (error) {
